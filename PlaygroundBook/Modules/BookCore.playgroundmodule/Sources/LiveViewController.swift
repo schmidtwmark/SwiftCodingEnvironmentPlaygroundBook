@@ -12,18 +12,18 @@ import SwiftUI
 import Combine
 
 //@MainActor
-public class LiveViewController: UIHostingController<CodeEnvironmentView<TextConsoleView>>, PlaygroundLiveViewMessageHandler {
+public class LiveViewController<CV: ConsoleView>: UIHostingController<CodeEnvironmentView<CV>>, PlaygroundLiveViewMessageHandler {
     
-    let console: TextConsole = TextConsole(colorScheme: .dark)
+    let console: CV.ConsoleType = CV.ConsoleType(colorScheme: .dark)
 
     
     public init() {
-        let contentView = CodeEnvironmentView<TextConsoleView>(console: console)
+        let contentView = CodeEnvironmentView<CV>(console: console)
         super.init(rootView: contentView)
     }
     
     public required init?(coder: NSCoder) {
-        let contentView = CodeEnvironmentView<TextConsoleView>(console: console)
+        let contentView = CodeEnvironmentView<CV>(console: console)
         
         super.init(rootView: contentView)
     }

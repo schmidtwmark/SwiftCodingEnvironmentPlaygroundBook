@@ -13,5 +13,5 @@ import SwiftUI
 
 
 // Set up the live view
-let liveViewController = LiveViewController<TextConsoleView>()
+let liveViewController = LiveViewController<TurtleConsoleView>()
 PlaygroundPage.current.liveView = liveViewController

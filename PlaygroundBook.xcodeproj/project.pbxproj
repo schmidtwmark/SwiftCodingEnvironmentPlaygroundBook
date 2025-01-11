@@ -29,10 +29,29 @@
 		ED59062B2D2799B2006D319A /* TurtleConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED5906202D2799B2006D319A /* TurtleConsole.swift */; };
 		ED59062C2D2799B2006D319A /* TextConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED59061E2D2799B2006D319A /* TextConsoleView.swift */; };
 		ED59062D2D2799B2006D319A /* TextConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED59061D2D2799B2006D319A /* TextConsole.swift */; };
+		EDC7E30F2D32AE1F00DF8898 /* Manifest.plist in Copy Book Contents */ = {isa = PBXBuildFile; fileRef = 5E086DCF2051DF0F004D8D25 /* Manifest.plist */; };
+		EDCF3C872D32ABDF00A47A24 /* Chapters in Copy Book Contents */ = {isa = PBXBuildFile; fileRef = 5EF2F9B62054E6F900191409 /* Chapters */; };
+		EDCF3C882D32ABDF00A47A24 /* Modules in Copy Book Contents */ = {isa = PBXBuildFile; fileRef = 5E70679E23678DC00094BDEF /* Modules */; };
+		EDCF3C8A2D32ABDF00A47A24 /* ManifestPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5EF2F97E2054B6E400191409 /* ManifestPlist.strings */; };
+		EDCF3C8B2D32ABDF00A47A24 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E551EC42371FC3F00784365 /* Assets.xcassets */; };
+		EDCF3C8C2D32ABDF00A47A24 /* LiveView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5E086DCC2051DDAE004D8D25 /* LiveView.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
 		5E086DD42051E415004D8D25 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*/Manifest.plist";
+			fileType = pattern.proxy;
+			inputFiles = (
+			);
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_NAME)",
+			);
+			script = "mkdir -p \"${DERIVED_FILE_DIR}\"\n\n\"${PROJECT_DIR}\"/SupportingContent/Tools/expandBuildSettingReferences --output \"${SCRIPT_OUTPUT_FILE_0}\" --use-environment \"${SCRIPT_INPUT_FILE}\"\n";
+		};
+		EDCF3C8D2D32ABDF00A47A24 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*/Manifest.plist";
@@ -90,6 +109,20 @@
 			remoteGlobalIDString = 5EF2F9AA2054BBF300191409;
 			remoteInfo = Book_Sources;
 		};
+		EDCF3C822D32ABDF00A47A24 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5E2A7ADD204F611300F4E17A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5EF2F9AA2054BBF300191409;
+			remoteInfo = Book_Sources;
+		};
+		EDCF3C842D32ABDF00A47A24 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5E2A7ADD204F611300F4E17A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5E6F7E602368FB6A008CC191;
+			remoteInfo = BookAPI;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -117,6 +150,19 @@
 				5EA2E3DB2056F8D100416A35 /* PlaygroundSupport.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDCF3C852D32ABDF00A47A24 /* Copy Book Contents */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				EDC7E30F2D32AE1F00DF8898 /* Manifest.plist in Copy Book Contents */,
+				EDCF3C872D32ABDF00A47A24 /* Chapters in Copy Book Contents */,
+				EDCF3C882D32ABDF00A47A24 /* Modules in Copy Book Contents */,
+			);
+			name = "Copy Book Contents";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -156,6 +202,7 @@
 		ED5906202D2799B2006D319A /* TurtleConsole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleConsole.swift; sourceTree = "<group>"; };
 		ED5906212D2799B2006D319A /* TurtleConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleConsoleView.swift; sourceTree = "<group>"; };
 		ED5906232D2799B2006D319A /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
+		EDCF3C912D32ABDF00A47A24 /* TurtleConsoleBook.playgroundbook */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleConsoleBook.playgroundbook; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +238,7 @@
 				5EF2F9AB2054BBF300191409 /* libBookCore.a */,
 				5E6F7E612368FB6A008CC191 /* libBookAPI.a */,
 				5EA2E3BD2056F35A00416A35 /* LiveViewTestApp.app */,
+				EDCF3C912D32ABDF00A47A24 /* TurtleConsoleBook.playgroundbook */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -470,6 +518,25 @@
 			productReference = 5EF2F9AB2054BBF300191409 /* libBookCore.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		EDCF3C802D32ABDF00A47A24 /* TurtleConsoleBook */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDCF3C8E2D32ABDF00A47A24 /* Build configuration list for PBXNativeTarget "TurtleConsoleBook" */;
+			buildPhases = (
+				EDCF3C852D32ABDF00A47A24 /* Copy Book Contents */,
+				EDCF3C892D32ABDF00A47A24 /* Resources */,
+			);
+			buildRules = (
+				EDCF3C8D2D32ABDF00A47A24 /* PBXBuildRule */,
+			);
+			dependencies = (
+				EDCF3C812D32ABDF00A47A24 /* PBXTargetDependency */,
+				EDCF3C832D32ABDF00A47A24 /* PBXTargetDependency */,
+			);
+			name = TurtleConsoleBook;
+			productName = PlaygroundBook;
+			productReference = EDCF3C912D32ABDF00A47A24 /* TurtleConsoleBook.playgroundbook */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -515,6 +582,7 @@
 				5EF2F9AA2054BBF300191409 /* BookCore */,
 				5E6F7E602368FB6A008CC191 /* BookAPI */,
 				5EA2E3BC2056F35A00416A35 /* LiveViewTestApp */,
+				EDCF3C802D32ABDF00A47A24 /* TurtleConsoleBook */,
 			);
 		};
 /* End PBXProject section */
@@ -535,6 +603,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				5EA2E3CA2056F35B00416A35 /* LiveViewTestAppLaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDCF3C892D32ABDF00A47A24 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDCF3C8A2D32ABDF00A47A24 /* ManifestPlist.strings in Resources */,
+				EDCF3C8B2D32ABDF00A47A24 /* Assets.xcassets in Resources */,
+				EDCF3C8C2D32ABDF00A47A24 /* LiveView.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -625,6 +703,16 @@
 			target = 5EF2F9AA2054BBF300191409 /* BookCore */;
 			targetProxy = 5EF2F9B42054BDD100191409 /* PBXContainerItemProxy */;
 		};
+		EDCF3C812D32ABDF00A47A24 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5EF2F9AA2054BBF300191409 /* BookCore */;
+			targetProxy = EDCF3C822D32ABDF00A47A24 /* PBXContainerItemProxy */;
+		};
+		EDCF3C832D32ABDF00A47A24 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5E6F7E602368FB6A008CC191 /* BookAPI */;
+			targetProxy = EDCF3C842D32ABDF00A47A24 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -665,6 +753,7 @@
 				INSTALL_PATH = /;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
 				PRODUCT_NAME = "$(PLAYGROUND_BOOK_FILE_NAME)";
+				SELECTED_CHAPTER = Chapter1.playgroundchapter;
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -679,6 +768,7 @@
 				INSTALL_PATH = /;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
 				PRODUCT_NAME = "$(PLAYGROUND_BOOK_FILE_NAME)";
+				SELECTED_CHAPTER = Chapter1.playgroundchapter;
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 			};
@@ -881,6 +971,39 @@
 			};
 			name = Release;
 		};
+		EDCF3C8F2D32ABDF00A47A24 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5E086DC72051DD03004D8D25 /* BookOverridingBuildSettings.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(PLAYGROUND_BOOK_CONTENT_VERSION)";
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				INSTALL_PATH = /;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SELECTED_CHAPTER = Chapter2.playgroundchapter;
+				SKIP_INSTALL = NO;
+				SUPPORTS_MACCATALYST = YES;
+			};
+			name = Debug;
+		};
+		EDCF3C902D32ABDF00A47A24 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5E086DC72051DD03004D8D25 /* BookOverridingBuildSettings.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(PLAYGROUND_BOOK_CONTENT_VERSION)";
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INSTALL_PATH = /;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SELECTED_CHAPTER = Chapter2.playgroundchapter;
+				SKIP_INSTALL = NO;
+				SUPPORTS_MACCATALYST = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -925,6 +1048,15 @@
 			buildConfigurations = (
 				5EF2F9B02054BBF300191409 /* Debug */,
 				5EF2F9B12054BBF300191409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EDCF3C8E2D32ABDF00A47A24 /* Build configuration list for PBXNativeTarget "TurtleConsoleBook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDCF3C8F2D32ABDF00A47A24 /* Debug */,
+				EDCF3C902D32ABDF00A47A24 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
