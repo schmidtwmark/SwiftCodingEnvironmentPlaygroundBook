@@ -15,9 +15,7 @@ import BookCore
 // This is controlled via the book-level `UserAutoImportedAuxiliaryModules`
 // Manifest.plist key.
 
-public let textLiveViewClient = TextLiveViewClient()
+public let console = TextLiveViewClient()
 
-public func write(_ text: String) {
-    print("In write function, writing text \(text)")
-    textLiveViewClient.write(text)
-}
+public let turtleConsole = TurtleLiveViewClient()
+

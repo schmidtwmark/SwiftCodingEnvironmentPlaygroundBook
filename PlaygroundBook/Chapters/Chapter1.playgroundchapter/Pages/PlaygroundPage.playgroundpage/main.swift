@@ -7,5 +7,5 @@
 //
 //#-end-hidden-code
 
-write("Hello")
+console.write("Hello")
 

@@ -9,6 +9,134 @@ import SwiftUI
 import SpriteKit
 import PlaygroundSupport
 
+enum TurtleSceneCommand {
+    case addTurtle
+    case added(UUID)
+    
+    case turtleAction(UUID, TurtleCommand)
+    case actionFinished
+}
+
+extension TurtleSceneCommand {
+    init?(_ playgroundValue: PlaygroundValue) {
+        guard case let .dictionary(dict) = playgroundValue else {
+            return nil
+        }
+        
+        guard case let .string(command)? = dict["Command"] else {
+            return nil
+        }
+        
+        switch command {
+            case "AddTurtle":
+                self = .addTurtle
+            case "Added":
+                guard case let .string(id)? = dict["ID"] else { return nil }
+                guard let uuid = UUID(uuidString: id) else { return nil }
+                self = .added(uuid)
+            case "TurtleAction":
+                guard case let .string(id)? = dict["ID"] else { return nil }
+                guard let uuid = UUID(uuidString: id) else { return nil }
+                guard case let .dictionary(actionDict)? = dict["Action"] else { return nil }
+                guard let action = TurtleCommand(.dictionary(actionDict)) else { return nil }
+                self = .turtleAction(uuid, action)
+            case "ActionFinished":
+                self = .actionFinished
+            default: return nil
+        }
+    }
+}
+
+extension TurtleSceneCommand {
+    var playgroundValue: PlaygroundValue {
+        switch self {
+        case .addTurtle:
+            return .dictionary(["Command": .string("AddTurtle")])
+        case .added(let uuid):
+            return .dictionary([
+                "Command": .string("Added"),
+                "ID": .string(uuid.uuidString)
+            ])
+        case .turtleAction(let uuid, let action):
+            return .dictionary([
+                "Command": .string("TurtleAction"),
+                "ID": .string(uuid.uuidString),
+                "Action": action.playgroundValue
+            ])
+        case .actionFinished:
+            return .dictionary(["Command": .string("ActionFinished")])
+        }
+    }
+}
+
+enum TurtleCommand {
+    case forward(CGFloat)
+    case penUp
+    case penDown(Color)
+    case rotate(CGFloat)
+    case arc(CGFloat, CGFloat)
+    case lineColor(Color)
+    case lineWidth(CGFloat)
+}
+
+extension TurtleCommand {
+    init?(_ playgroundValue: PlaygroundValue) {
+        guard case let .dictionary(dict) = playgroundValue else {
+            return nil
+        }
+        
+        guard case let .string(command)? = dict["Command"] else {
+            return nil
+        }
+        
+        switch command {
+            case "Forward":
+                guard case let .floatingPoint(distance)? = dict["Distance"] else { return nil }
+                self = .forward(distance)
+            case "PenUp":
+                self = .penUp
+            case "PenDown":
+                guard case let .integer(hex)? = dict["FillColor"] else { return nil }
+                self = .penDown(Color(hex: hex))
+            case "Rotate":
+                guard case let .floatingPoint(angle)? = dict["Angle"] else { return nil }
+                self = .rotate(angle)
+            case "Arc":
+                guard case let .floatingPoint(radius)? = dict["Radius"] else { return nil }
+                guard case let .floatingPoint(angle)? = dict["Angle"] else { return nil }
+                self = .arc(radius, angle)
+            case "LineColor":
+                guard case let .integer(hex)? = dict["Color"] else { return nil }
+                self = .lineColor(Color(hex: hex))
+            case "LineWidth":
+                guard case let .floatingPoint(width)? = dict["Width"] else { return nil }
+                self = .lineWidth(width)
+            default: return nil
+        }
+    }
+}
+
+extension TurtleCommand {
+    var playgroundValue: PlaygroundValue {
+        switch self {
+        case .forward(let distance):
+            return .dictionary(["Command": .string("Forward"), "Distance": .floatingPoint(distance)])
+        case .penUp:
+            return .dictionary(["Command": .string("PenUp")])
+        case .penDown(let fillColor):
+            return .dictionary(["Command": .string("PenDown"), "FillColor": .integer(fillColor.hex)])
+        case .rotate(let angle):
+            return .dictionary(["Command": .string("Rotate"), "Angle": .floatingPoint(angle)])
+        case .arc(let radius, let angle):
+            return .dictionary(["Command": .string("Arc"), "Radius": .floatingPoint(radius), "Angle": .floatingPoint(angle)])
+        case .lineColor(let color):
+            return .dictionary(["Command": .string("LineColor"), "Color": .integer(color.hex)])
+        case .lineWidth(let width):
+            return .dictionary(["Command": .string("LineWidth"), "Width": .floatingPoint(width)])
+        }
+    }
+}
+
 extension CGFloat {
     var radians: CGFloat {
         return self * .pi / 180
@@ -52,10 +180,6 @@ public class Turtle: SKSpriteNode {
         let end = CGPointMake(start.x + dx, start.y + dy)
         let moveAction = SKAction.move(to: end, duration: distance / MOVEMENT_SPEED_0)
         await self.runAsync(moveAction)
-    }
-    
-    public func backward(_ distance: CGFloat) async {
-        await forward(-distance)
     }
     
     private func runAsync(_ action: SKAction) async {
@@ -141,6 +265,25 @@ public class Turtle: SKSpriteNode {
         self.lineWidth = width
         if case .down(_, _, let fill) = self.penState {
             self.penDown(fillColor: fill)
+        }
+    }
+    
+    func action(_ command: TurtleCommand) async {
+        switch command {
+        case .forward(let distance):
+            await forward(distance)
+        case .penUp:
+            penUp()
+        case .penDown(let fillColor):
+            penDown(fillColor: UIColor(fillColor))
+        case .rotate(let angle):
+            await rotate(angle)
+        case .arc(let radius, let angle):
+            await arc(radius: radius, angle: angle)
+        case .lineColor(let color):
+            await setColor(UIColor(color))
+        case .lineWidth(let width):
+            lineWidth(width)
         }
     }
 }
@@ -272,7 +415,6 @@ class TurtleScene: SKScene {
             
             camera.position = newPosition
         }
-       
     }
 
 }
@@ -285,8 +427,21 @@ extension CGSize {
 
 @MainActor
 public final class TurtleConsole: BaseConsole<TurtleConsole>, Console {
+    
+    var turtleMap: [UUID: Turtle] = [:]
     public func receive(_ message: PlaygroundSupport.PlaygroundValue) {
-        // todo, convert to turtlecommand
+        guard let command = TurtleSceneCommand(message) else { return }
+        
+        switch command {
+        case .addTurtle:
+            addTurtle()
+        case .turtleAction(let turtleId, let action):
+            Task {
+                await turtleMap[turtleId]?.action(action)
+                messageHandler?.send(TurtleSceneCommand.actionFinished.playgroundValue)
+            }
+        default: break
+        }
     }
     
     
@@ -308,10 +463,12 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console {
         false
     }
     
-    public func addTurtle() -> Turtle {
+    public func addTurtle() {
         let turtle = Turtle(console: self)
         self.scene.addChild(turtle)
-        return turtle
+        let turtleId = UUID()
+        turtleMap[turtleId] = turtle
+        messageHandler?.send(TurtleSceneCommand.added(turtleId).playgroundValue)
     }
     
     public var title: String { "Turtle" }
