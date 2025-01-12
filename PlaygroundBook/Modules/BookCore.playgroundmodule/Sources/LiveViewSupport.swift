@@ -138,13 +138,13 @@ public class TurtleHandle {
 
 public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
     
-    var responses: [TurtleSceneCommand] = []
+    var responses: [TurtleSceneResponse] = []
     
     public init() {
         
     }
     
-    @discardableResult func sendCommand(_ command : TurtleSceneCommand) -> TurtleSceneCommand {
+    @discardableResult func sendCommand(_ command : TurtleSceneCommand) -> TurtleSceneResponse? {
         
         guard Thread.isMainThread else {
             return DispatchQueue.main.sync { [unowned self] in
@@ -153,7 +153,7 @@ public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
         }
         
         guard let liveViewMessageHandler = PlaygroundPage.current.liveView as? PlaygroundRemoteLiveViewProxy else {
-            return .actionFinished
+            return nil
         }
         
         liveViewMessageHandler.send(command.playgroundValue)
@@ -161,7 +161,6 @@ public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
         repeat {
             RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
         } while responses.count == 0
-
 
         return responses.remove(at: 0)
     }
@@ -172,7 +171,7 @@ public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
         if case .added(let id) = result {
             return TurtleHandle(liveViewClient: self, id: id)
         } else {
-            fatalError("Could not add turtle")
+            return TurtleHandle(liveViewClient: self, id: UUID())
         }
     }
     
@@ -182,10 +181,10 @@ public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
     }
     
     public func remoteLiveViewProxy(_ remoteLiveViewProxy: PlaygroundRemoteLiveViewProxy, received message: PlaygroundValue) {
-        guard let command = TurtleSceneCommand(message) else {
+        guard let response = TurtleSceneResponse(message) else {
             return
         }
         
-        responses.append(command)
+        responses.append(response)
     }
 }

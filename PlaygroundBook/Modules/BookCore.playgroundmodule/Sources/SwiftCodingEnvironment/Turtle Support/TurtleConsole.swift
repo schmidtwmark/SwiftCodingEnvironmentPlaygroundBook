@@ -11,10 +11,54 @@ import PlaygroundSupport
 
 enum TurtleSceneCommand {
     case addTurtle
-    case added(UUID)
-    
     case turtleAction(UUID, TurtleCommand)
-    case actionFinished
+}
+
+enum TurtleSceneResponse {
+    case added(UUID)
+    case actionFinished(UUID, TurtleCommand)
+}
+
+extension TurtleSceneResponse {
+    init?(_ playgroundValue: PlaygroundValue) {
+        guard case let .dictionary(dict) = playgroundValue else {
+            return nil
+        }
+        
+        guard case let .string(command)? = dict["Command"] else {
+            return nil
+        }
+        switch command {
+            
+        case "Added":
+            guard case let .string(id)? = dict["ID"] else { return nil }
+            guard let uuid = UUID(uuidString: id) else { return nil }
+            self = .added(uuid)
+        case "ActionFinished":
+            guard case let .string(id)? = dict["ID"] else { return nil }
+            guard let uuid = UUID(uuidString: id) else { return nil }
+            guard let command = dict["TurtleCommand"] else { return nil }
+            guard let turtleCommand = TurtleCommand(command) else { return nil }
+            self = .actionFinished(uuid, turtleCommand)
+        default: return nil
+        }
+    }
+    
+    var playgroundValue: PlaygroundValue {
+        switch self {
+        case .added(let uuid):
+            return .dictionary([
+                "Command": .string("Added"),
+                "ID": .string(uuid.uuidString)
+            ])
+        case .actionFinished(let uuid, let command):
+            return .dictionary([
+                "Command": .string("ActionFinished"),
+                "ID": .string(uuid.uuidString),
+                "TurtleCommand": command.playgroundValue
+                ])
+            }
+    }
 }
 
 extension TurtleSceneCommand {
@@ -30,18 +74,12 @@ extension TurtleSceneCommand {
         switch command {
             case "AddTurtle":
                 self = .addTurtle
-            case "Added":
-                guard case let .string(id)? = dict["ID"] else { return nil }
-                guard let uuid = UUID(uuidString: id) else { return nil }
-                self = .added(uuid)
             case "TurtleAction":
                 guard case let .string(id)? = dict["ID"] else { return nil }
                 guard let uuid = UUID(uuidString: id) else { return nil }
                 guard case let .dictionary(actionDict)? = dict["Action"] else { return nil }
                 guard let action = TurtleCommand(.dictionary(actionDict)) else { return nil }
                 self = .turtleAction(uuid, action)
-            case "ActionFinished":
-                self = .actionFinished
             default: return nil
         }
     }
@@ -52,19 +90,12 @@ extension TurtleSceneCommand {
         switch self {
         case .addTurtle:
             return .dictionary(["Command": .string("AddTurtle")])
-        case .added(let uuid):
-            return .dictionary([
-                "Command": .string("Added"),
-                "ID": .string(uuid.uuidString)
-            ])
         case .turtleAction(let uuid, let action):
             return .dictionary([
                 "Command": .string("TurtleAction"),
                 "ID": .string(uuid.uuidString),
                 "Action": action.playgroundValue
             ])
-        case .actionFinished:
-            return .dictionary(["Command": .string("ActionFinished")])
         }
     }
 }
@@ -153,11 +184,11 @@ public class Turtle: SKSpriteNode {
     
     private var lineWidth: CGFloat = 3.0
     private var penState: PenState = .up
-    private nonisolated let console: TurtleConsole
+    private let console: TurtleConsole
     
     private static func texture() -> SKTexture {
 //        let image = UIImage(resource: .init(name: "arrow", bundle: Bundle.module))
-        let image = UIImage(named: "arrow")!
+        let image = UIImage(named: "arrow") ?? UIImage(systemName: "arrow.right")!
         return SKTexture(image: image)
     }
     
@@ -430,18 +461,18 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console {
     
     var turtleMap: [UUID: Turtle] = [:]
     public func receive(_ message: PlaygroundSupport.PlaygroundValue) {
-        guard let command = TurtleSceneCommand(message) else { return }
-        
-        switch command {
-        case .addTurtle:
-            addTurtle()
-        case .turtleAction(let turtleId, let action):
-            Task {
-                await turtleMap[turtleId]?.action(action)
-                messageHandler?.send(TurtleSceneCommand.actionFinished.playgroundValue)
-            }
-        default: break
-        }
+        addTurtle()
+//        guard let command = TurtleSceneCommand(message) else { return }
+//        
+//        switch command {
+//        case .addTurtle:
+//            addTurtle()
+//        case .turtleAction(let turtleId, let action):
+//            Task {
+//                await turtleMap[turtleId]?.action(action)
+//                messageHandler?.send(TurtleSceneResponse.actionFinished(turtleId, action).playgroundValue)
+//            }
+//        }
     }
     
     
@@ -463,12 +494,13 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console {
         false
     }
     
-    public func addTurtle() {
+    @discardableResult func addTurtle() -> Turtle {
         let turtle = Turtle(console: self)
         self.scene.addChild(turtle)
         let turtleId = UUID()
         turtleMap[turtleId] = turtle
-        messageHandler?.send(TurtleSceneCommand.added(turtleId).playgroundValue)
+        messageHandler?.send(TurtleSceneResponse.added(turtleId).playgroundValue)
+        return turtle
     }
     
     public var title: String { "Turtle" }
