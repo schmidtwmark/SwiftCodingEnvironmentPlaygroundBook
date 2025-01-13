@@ -9,13 +9,13 @@ import SwiftUI
 import PlaygroundSupport
 
 extension Color {
-    init(hex: Int, alpha: Double = 1) {
+    init(hex: Int) {
         self.init(
             .sRGB,
-            red: Double((hex >> 16) & 0xff) / 255,
-            green: Double((hex >> 08) & 0xff) / 255,
-            blue: Double((hex >> 00) & 0xff) / 255,
-            opacity: alpha
+            red: Double((hex >> 24) & 0xff) / 255,
+            green: Double((hex >> 16) & 0xff) / 255,
+            blue: Double((hex >> 08) & 0xff) / 255,
+            opacity: Double((hex >> 00) & 0xff) / 255
         )
     }
     
@@ -37,11 +37,12 @@ extension Color {
         uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         
         // Convert to hex
-        let r = Int(red * 255) << 16
-        let g = Int(green * 255) << 8
-        let b = Int(blue * 255)
+        let r = Int(red * 255) << 24
+        let g = Int(green * 255) << 16
+        let b = Int(blue * 255) << 8
+        let a = Int(alpha * 255)
         
-        return r | g | b
+        return r | g | b | a
     }
 }
 
