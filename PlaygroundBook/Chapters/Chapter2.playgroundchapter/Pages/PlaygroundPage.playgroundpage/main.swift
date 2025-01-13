@@ -7,8 +7,6 @@
 //
 //#-end-hidden-code
 
-import PlaygroundSupport
-
 let turtle = turtleConsole.addTurtle()
 turtle.penDown()
 turtle.lineColor(.red)

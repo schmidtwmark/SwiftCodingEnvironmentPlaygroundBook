@@ -469,7 +469,7 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console {
         case .turtleAction(let turtleId, let action):
             Task {
                 await turtleMap[turtleId]?.action(action)
-                messageHandler!.send(TurtleSceneResponse.actionFinished(turtleId, action).playgroundValue)
+                messageHandler?.send(TurtleSceneResponse.actionFinished(turtleId, action).playgroundValue)
             }
         }
     }
@@ -504,13 +504,13 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console {
         false
     }
     
-    @discardableResult func addTurtle() -> Turtle {
+    func addTurtle() {
         let turtle = Turtle(console: self)
         self.scene.addChild(turtle)
         let turtleId = UUID()
         turtleMap[turtleId] = turtle
-        messageHandler!.send(TurtleSceneResponse.added(turtleId).playgroundValue)
-        return turtle
+        messageHandler?.send(TurtleSceneResponse.added(turtleId).playgroundValue)
+//        return turtle
     }
     
     public var title: String { "Turtle" }

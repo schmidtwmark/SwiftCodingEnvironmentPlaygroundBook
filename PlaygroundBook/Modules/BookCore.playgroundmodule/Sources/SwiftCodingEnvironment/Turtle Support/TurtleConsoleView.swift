@@ -89,10 +89,11 @@ public struct TurtleConsoleView: ConsoleView {
             }
             .overlay(alignment: .topTrailing) {
                 Button {
-                    let t = console.addTurtle()
-                    Task {
-                        await t.forward(100)
-                    }
+//                    let t = console.addTurtle()
+//                    Task {
+//                        await t.forward(100)
+//                    }
+                    console.addTurtle()
                 } label: {
                     Text("Test Button")
                 }

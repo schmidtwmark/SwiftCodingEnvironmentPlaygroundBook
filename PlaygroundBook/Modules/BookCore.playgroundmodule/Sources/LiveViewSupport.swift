@@ -145,7 +145,6 @@ public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
     }
     
     @discardableResult func sendCommand(_ command : TurtleSceneCommand) -> TurtleSceneResponse? {
-        
         guard Thread.isMainThread else {
             return DispatchQueue.main.sync { [unowned self] in
                 return self.sendCommand(command)
@@ -158,7 +157,7 @@ public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
         
         liveViewMessageHandler.delegate = self
         liveViewMessageHandler.send(command.playgroundValue)
-
+        
         repeat {
             RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
         } while responses.count == 0
