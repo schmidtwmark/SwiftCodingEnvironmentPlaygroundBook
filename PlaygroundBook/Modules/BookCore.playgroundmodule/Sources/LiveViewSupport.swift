@@ -156,6 +156,7 @@ public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
             return nil
         }
         
+        liveViewMessageHandler.delegate = self
         liveViewMessageHandler.send(command.playgroundValue)
 
         repeat {

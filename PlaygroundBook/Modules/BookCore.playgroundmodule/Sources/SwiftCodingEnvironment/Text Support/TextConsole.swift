@@ -106,7 +106,6 @@ public final class TextConsole: BaseConsole<TextConsole>, Console {
         lines = []
         userInput = ""
         super.start(messageHandler: messageHandler)
-        
     }
     
     public override func finish(_ newState: RunState) {

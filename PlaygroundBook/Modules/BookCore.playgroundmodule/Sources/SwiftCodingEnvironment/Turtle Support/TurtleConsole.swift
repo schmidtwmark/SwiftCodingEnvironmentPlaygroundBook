@@ -461,18 +461,17 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console {
     
     var turtleMap: [UUID: Turtle] = [:]
     public func receive(_ message: PlaygroundSupport.PlaygroundValue) {
-        addTurtle()
-//        guard let command = TurtleSceneCommand(message) else { return }
-//        
-//        switch command {
-//        case .addTurtle:
-//            addTurtle()
-//        case .turtleAction(let turtleId, let action):
-//            Task {
-//                await turtleMap[turtleId]?.action(action)
-//                messageHandler?.send(TurtleSceneResponse.actionFinished(turtleId, action).playgroundValue)
-//            }
-//        }
+        guard let command = TurtleSceneCommand(message) else { return }
+        
+        switch command {
+        case .addTurtle:
+            addTurtle()
+        case .turtleAction(let turtleId, let action):
+            Task {
+                await turtleMap[turtleId]?.action(action)
+                messageHandler!.send(TurtleSceneResponse.actionFinished(turtleId, action).playgroundValue)
+            }
+        }
     }
     
     
@@ -490,6 +489,17 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console {
 
     var scene: TurtleScene
     
+    public override func start(messageHandler: any PlaygroundLiveViewMessageHandler) {
+        clear()
+        super.start(messageHandler: messageHandler)
+    }
+    
+    override public func clear() {
+        super.clear()
+        scene.removeAllChildren()
+        scene.setupCamera()
+    }
+    
     public var disableClear: Bool {
         false
     }
@@ -499,7 +509,7 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console {
         self.scene.addChild(turtle)
         let turtleId = UUID()
         turtleMap[turtleId] = turtle
-        messageHandler?.send(TurtleSceneResponse.added(turtleId).playgroundValue)
+        messageHandler!.send(TurtleSceneResponse.added(turtleId).playgroundValue)
         return turtle
     }
     
