@@ -159,7 +159,7 @@ public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
         liveViewMessageHandler.send(command.playgroundValue)
         
         repeat {
-            RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
+            RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.01))
         } while responses.count == 0
 
         return responses.remove(at: 0)
