@@ -30,6 +30,7 @@
 		ED59062C2D2799B2006D319A /* TextConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED59061E2D2799B2006D319A /* TextConsoleView.swift */; };
 		ED59062D2D2799B2006D319A /* TextConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED59061D2D2799B2006D319A /* TextConsole.swift */; };
 		EDC7E30F2D32AE1F00DF8898 /* Manifest.plist in Copy Book Contents */ = {isa = PBXBuildFile; fileRef = 5E086DCF2051DF0F004D8D25 /* Manifest.plist */; };
+		EDC7E3192D3607C300DF8898 /* BookAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC7E3102D36077A00DF8898 /* BookAPI.swift */; };
 		EDCF3C872D32ABDF00A47A24 /* Chapters in Copy Book Contents */ = {isa = PBXBuildFile; fileRef = 5EF2F9B62054E6F900191409 /* Chapters */; };
 		EDCF3C882D32ABDF00A47A24 /* Modules in Copy Book Contents */ = {isa = PBXBuildFile; fileRef = 5E70679E23678DC00094BDEF /* Modules */; };
 		EDCF3C8A2D32ABDF00A47A24 /* ManifestPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5EF2F97E2054B6E400191409 /* ManifestPlist.strings */; };
@@ -109,19 +110,26 @@
 			remoteGlobalIDString = 5EF2F9AA2054BBF300191409;
 			remoteInfo = Book_Sources;
 		};
+		EDC7E3162D3607C300DF8898 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5E2A7ADD204F611300F4E17A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5EF2F9AA2054BBF300191409;
+			remoteInfo = BookCore;
+		};
+		EDC7E31F2D36083900DF8898 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5E2A7ADD204F611300F4E17A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EDC7E3142D3607C300DF8898;
+			remoteInfo = TurtleAPI;
+		};
 		EDCF3C822D32ABDF00A47A24 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5E2A7ADD204F611300F4E17A /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 5EF2F9AA2054BBF300191409;
 			remoteInfo = Book_Sources;
-		};
-		EDCF3C842D32ABDF00A47A24 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5E2A7ADD204F611300F4E17A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5E6F7E602368FB6A008CC191;
-			remoteInfo = BookAPI;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -202,6 +210,8 @@
 		ED5906202D2799B2006D319A /* TurtleConsole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleConsole.swift; sourceTree = "<group>"; };
 		ED5906212D2799B2006D319A /* TurtleConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleConsoleView.swift; sourceTree = "<group>"; };
 		ED5906232D2799B2006D319A /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
+		EDC7E3102D36077A00DF8898 /* BookAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookAPI.swift; sourceTree = "<group>"; };
+		EDC7E31E2D3607C300DF8898 /* libTurtleAPI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTurtleAPI.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDCF3C912D32ABDF00A47A24 /* TurtleConsoleBook.playgroundbook */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleConsoleBook.playgroundbook; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -228,6 +238,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EDC7E31A2D3607C300DF8898 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -239,6 +256,7 @@
 				5E6F7E612368FB6A008CC191 /* libBookAPI.a */,
 				5EA2E3BD2056F35A00416A35 /* LiveViewTestApp.app */,
 				EDCF3C912D32ABDF00A47A24 /* TurtleConsoleBook.playgroundbook */,
+				EDC7E31E2D3607C300DF8898 /* libTurtleAPI.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -325,6 +343,7 @@
 			children = (
 				5E70679C23678D8A0094BDEF /* BookCore.playgroundmodule */,
 				5E6F7E5A2367B621008CC191 /* BookAPI.playgroundmodule */,
+				EDC7E3122D36077A00DF8898 /* TurtleAPI.playgroundmodule */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -441,6 +460,22 @@
 			path = SwiftCodingEnvironment;
 			sourceTree = "<group>";
 		};
+		EDC7E3112D36077A00DF8898 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				EDC7E3102D36077A00DF8898 /* BookAPI.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		EDC7E3122D36077A00DF8898 /* TurtleAPI.playgroundmodule */ = {
+			isa = PBXGroup;
+			children = (
+				EDC7E3112D36077A00DF8898 /* Sources */,
+			);
+			path = TurtleAPI.playgroundmodule;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -518,6 +553,23 @@
 			productReference = 5EF2F9AB2054BBF300191409 /* libBookCore.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		EDC7E3142D3607C300DF8898 /* TurtleAPI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDC7E31B2D3607C300DF8898 /* Build configuration list for PBXNativeTarget "TurtleAPI" */;
+			buildPhases = (
+				EDC7E3172D3607C300DF8898 /* Sources */,
+				EDC7E31A2D3607C300DF8898 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EDC7E3152D3607C300DF8898 /* PBXTargetDependency */,
+			);
+			name = TurtleAPI;
+			productName = BookAPI;
+			productReference = EDC7E31E2D3607C300DF8898 /* libTurtleAPI.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		EDCF3C802D32ABDF00A47A24 /* TurtleConsoleBook */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EDCF3C8E2D32ABDF00A47A24 /* Build configuration list for PBXNativeTarget "TurtleConsoleBook" */;
@@ -529,8 +581,8 @@
 				EDCF3C8D2D32ABDF00A47A24 /* PBXBuildRule */,
 			);
 			dependencies = (
+				EDC7E3202D36083900DF8898 /* PBXTargetDependency */,
 				EDCF3C812D32ABDF00A47A24 /* PBXTargetDependency */,
-				EDCF3C832D32ABDF00A47A24 /* PBXTargetDependency */,
 			);
 			name = TurtleConsoleBook;
 			productName = PlaygroundBook;
@@ -583,6 +635,7 @@
 				5E6F7E602368FB6A008CC191 /* BookAPI */,
 				5EA2E3BC2056F35A00416A35 /* LiveViewTestApp */,
 				EDCF3C802D32ABDF00A47A24 /* TurtleConsoleBook */,
+				EDC7E3142D3607C300DF8898 /* TurtleAPI */,
 			);
 		};
 /* End PBXProject section */
@@ -670,6 +723,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EDC7E3172D3607C300DF8898 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDC7E3192D3607C300DF8898 /* BookAPI.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -703,15 +764,20 @@
 			target = 5EF2F9AA2054BBF300191409 /* BookCore */;
 			targetProxy = 5EF2F9B42054BDD100191409 /* PBXContainerItemProxy */;
 		};
+		EDC7E3152D3607C300DF8898 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5EF2F9AA2054BBF300191409 /* BookCore */;
+			targetProxy = EDC7E3162D3607C300DF8898 /* PBXContainerItemProxy */;
+		};
+		EDC7E3202D36083900DF8898 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EDC7E3142D3607C300DF8898 /* TurtleAPI */;
+			targetProxy = EDC7E31F2D36083900DF8898 /* PBXContainerItemProxy */;
+		};
 		EDCF3C812D32ABDF00A47A24 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5EF2F9AA2054BBF300191409 /* BookCore */;
 			targetProxy = EDCF3C822D32ABDF00A47A24 /* PBXContainerItemProxy */;
-		};
-		EDCF3C832D32ABDF00A47A24 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5E6F7E602368FB6A008CC191 /* BookAPI */;
-			targetProxy = EDCF3C842D32ABDF00A47A24 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -754,6 +820,7 @@
 				INSTALL_PATH = /;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
 				PRODUCT_NAME = "$(PLAYGROUND_BOOK_FILE_NAME)";
+				SELECTED_API = BookAPI;
 				SELECTED_CHAPTER = Chapter1.playgroundchapter;
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
@@ -770,6 +837,7 @@
 				INSTALL_PATH = /;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
 				PRODUCT_NAME = "$(PLAYGROUND_BOOK_FILE_NAME)";
+				SELECTED_API = BookAPI;
 				SELECTED_CHAPTER = Chapter1.playgroundchapter;
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
@@ -973,6 +1041,22 @@
 			};
 			name = Release;
 		};
+		EDC7E31C2D3607C300DF8898 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5E6F7E6D2368FC9A008CC191 /* ModuleOverridingBuildSettings.xcconfig */;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		EDC7E31D2D3607C300DF8898 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5E6F7E6D2368FC9A008CC191 /* ModuleOverridingBuildSettings.xcconfig */;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		EDCF3C8F2D32ABDF00A47A24 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5E086DC72051DD03004D8D25 /* BookOverridingBuildSettings.xcconfig */;
@@ -985,9 +1069,11 @@
 				INSTALL_PATH = /;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SELECTED_API = TurtleAPI;
 				SELECTED_CHAPTER = Chapter2.playgroundchapter;
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
+				SelectedApi = TurtleAPI;
 			};
 			name = Debug;
 		};
@@ -1002,9 +1088,11 @@
 				INSTALL_PATH = /;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SELECTED_API = TurtleAPI;
 				SELECTED_CHAPTER = Chapter2.playgroundchapter;
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
+				SelectedApi = TurtleAPI;
 			};
 			name = Release;
 		};
@@ -1052,6 +1140,15 @@
 			buildConfigurations = (
 				5EF2F9B02054BBF300191409 /* Debug */,
 				5EF2F9B12054BBF300191409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EDC7E31B2D3607C300DF8898 /* Build configuration list for PBXNativeTarget "TurtleAPI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDC7E31C2D3607C300DF8898 /* Debug */,
+				EDC7E31D2D3607C300DF8898 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

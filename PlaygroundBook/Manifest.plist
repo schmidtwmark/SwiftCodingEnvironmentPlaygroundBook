@@ -22,7 +22,7 @@
 	</array>
 	<key>UserAutoImportedAuxiliaryModules</key>
 	<array>
-		<string>BookAPI</string>
+		<string>$(SELECTED_API)</string>
 	</array>
 	<key>UserModuleMode</key>
 	<string>Full</string>
