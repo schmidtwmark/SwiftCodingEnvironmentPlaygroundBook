@@ -11,15 +11,14 @@ import PlaygroundSupport
 
 let MAX_LINES = 100
 
-public enum TextCommand {
+public enum TextCommand{
     case write(String)
     case read(String)
     case writeColor(ColoredString)
-    case submit(String) // Sent from live view to student code when there is a response
 }
 
-extension TextCommand {
-    init?(_ value: PlaygroundValue) {
+extension TextCommand : ConsoleMessage {
+    public init?(_ value: PlaygroundValue) {
         guard case let .dictionary(dict) = value else {
             return nil
         }
@@ -39,24 +38,49 @@ extension TextCommand {
                 guard let array = dict["ColoredText"] else { return nil }
                 guard let coloredString = ColoredString(array) else { return nil }
                 self = .writeColor(coloredString)
-            case "Submit":
-                guard case let .string(text)? = dict["Text"] else { return nil }
-                self = .submit(text)
             default: return nil
         }
     }
     
-    var playgroundValue: PlaygroundValue {
+    public var playgroundValue: PlaygroundValue {
         
         switch self {
         case .write(let text): return .dictionary(["Command": .string("Write"), "Text": .string(text)])
         case .read(let text): return .dictionary(["Command": .string("Read"), "Prompt": .string(text)])
         case .writeColor(let coloredString): return .dictionary(["Command": .string("WriteColor"), "ColoredText": coloredString.playgroundValue])
-        case .submit(let text): return .dictionary(["Command": .string("Submit"), "Text": .string(text)])
         }
     }
 }
 
+public enum TextResponse {
+    case submit(String)
+}
+extension TextResponse : ConsoleMessage {
+    public init?(_ value: PlaygroundValue) {
+        guard case let .dictionary(dict) = value else {
+            return nil
+        }
+        
+        guard case let .string(command)? = dict["Command"] else {
+            return nil
+        }
+        
+        switch command {
+        case "Submit":
+            guard case let .string(text)? = dict["Text"] else { return nil }
+            self = .submit(text)
+        default: return nil
+        }
+    }
+    
+    public var playgroundValue: PlaygroundValue {
+        
+        switch self {
+        case .submit(let text): return .dictionary(["Command": .string("Submit"), "Text": .string(text)])
+        }
+    }
+}
+    
 
 @MainActor
 public final class TextConsole: BaseConsole<TextConsole>, Console {
@@ -81,19 +105,17 @@ public final class TextConsole: BaseConsole<TextConsole>, Console {
     @Published var userInput = ""
     
     private func append(_ line: Line) {
-//        if state == .running {
-            if lines.count >= MAX_LINES {
-                lines.removeFirst()
-            }
-            lines.append(line)
-//        }
+        if lines.count >= MAX_LINES {
+            lines.removeFirst()
+        }
+        lines.append(line)
     }
     
     public func write(_ line: String) {
-           self.append(Line(content: .output(.init(stringLiteral: line))))
+        self.append(Line(content: .output(.init(stringLiteral: line))))
     }
     public func write(_ colored: ColoredString) {
-            self.append(Line(content: .output(colored.attributedString)))
+        self.append(Line(content: .output(colored.attributedString)))
     }
     
     public func read(_ prompt: String) {
@@ -118,7 +140,7 @@ public final class TextConsole: BaseConsole<TextConsole>, Console {
         lines = []
         userInput = ""
     }
-               
+    
     func submitInput(_ resume: Bool) {
         if lines.count > 0 {
             if lines[lines.count - 1].content == .input {
@@ -127,7 +149,7 @@ public final class TextConsole: BaseConsole<TextConsole>, Console {
             
         }
         if resume {
-            messageHandler?.send(TextCommand.submit(userInput).playgroundValue)
+            messageHandler?.send(TextResponse.submit(userInput))
         }
         userInput = ""
     }
@@ -140,20 +162,16 @@ public final class TextConsole: BaseConsole<TextConsole>, Console {
     
     
     public func receive(_ message: PlaygroundValue) {
-            guard let textCommand = TextCommand(message) else {
-                self.write("Invalid message \(message)")
-                return }
-            switch textCommand {
-            case .write(let text):
-                self.write(text)
-            case .read(let prompt):
-                self.read(prompt)
-            case .writeColor(let text):
-                self.write(text)
-            case .submit(_):
-                print("Error, front end should not send 'submit'")
+        guard let textCommand = TextCommand(message) else {
+            self.write("Invalid message \(message)")
+            return }
+        switch textCommand {
+        case .write(let text):
+            self.write(text)
+        case .read(let prompt):
+            self.read(prompt)
+        case .writeColor(let text):
+            self.write(text)
         }
     }
-    
-    
 }

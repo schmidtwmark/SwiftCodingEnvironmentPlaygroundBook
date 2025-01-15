@@ -141,3 +141,21 @@ public protocol ConsoleView: View {
     associatedtype ConsoleType : Console
     init(console: ConsoleType)
 }
+
+public protocol ConsoleMessage {
+    var playgroundValue: PlaygroundValue { get }
+    
+    init?(_ playgroundValue: PlaygroundValue)
+}
+
+extension PlaygroundRemoteLiveViewProxy {
+    func send(_ message: ConsoleMessage) {
+        send(message.playgroundValue)
+    }
+}
+
+extension PlaygroundLiveViewMessageHandler {
+    func send(_ message: ConsoleMessage) {
+        send(message.playgroundValue)
+    }
+}

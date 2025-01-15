@@ -9,18 +9,18 @@ import SwiftUI
 import SpriteKit
 import PlaygroundSupport
 
-enum TurtleSceneCommand {
+public enum TurtleSceneCommand {
     case addTurtle
     case turtleAction(UUID, TurtleCommand)
 }
 
-enum TurtleSceneResponse {
+public enum TurtleSceneResponse {
     case added(UUID)
     case actionFinished(UUID, TurtleCommand)
 }
 
-extension TurtleSceneResponse {
-    init?(_ playgroundValue: PlaygroundValue) {
+extension TurtleSceneResponse: ConsoleMessage {
+    public init?(_ playgroundValue: PlaygroundValue) {
         guard case let .dictionary(dict) = playgroundValue else {
             return nil
         }
@@ -44,7 +44,7 @@ extension TurtleSceneResponse {
         }
     }
     
-    var playgroundValue: PlaygroundValue {
+    public var playgroundValue: PlaygroundValue {
         switch self {
         case .added(let uuid):
             return .dictionary([
@@ -61,8 +61,8 @@ extension TurtleSceneResponse {
     }
 }
 
-extension TurtleSceneCommand {
-    init?(_ playgroundValue: PlaygroundValue) {
+extension TurtleSceneCommand: ConsoleMessage {
+    public init?(_ playgroundValue: PlaygroundValue) {
         guard case let .dictionary(dict) = playgroundValue else {
             return nil
         }
@@ -83,10 +83,7 @@ extension TurtleSceneCommand {
             default: return nil
         }
     }
-}
-
-extension TurtleSceneCommand {
-    var playgroundValue: PlaygroundValue {
+    public var playgroundValue: PlaygroundValue {
         switch self {
         case .addTurtle:
             return .dictionary(["Command": .string("AddTurtle")])
@@ -100,7 +97,7 @@ extension TurtleSceneCommand {
     }
 }
 
-enum TurtleCommand {
+public enum TurtleCommand {
     case forward(CGFloat)
     case penUp
     case penDown(Color)
@@ -110,8 +107,8 @@ enum TurtleCommand {
     case lineWidth(CGFloat)
 }
 
-extension TurtleCommand {
-    init?(_ playgroundValue: PlaygroundValue) {
+extension TurtleCommand : ConsoleMessage {
+    public init?(_ playgroundValue: PlaygroundValue) {
         guard case let .dictionary(dict) = playgroundValue else {
             return nil
         }
@@ -145,10 +142,8 @@ extension TurtleCommand {
             default: return nil
         }
     }
-}
-
-extension TurtleCommand {
-    var playgroundValue: PlaygroundValue {
+    
+    public var playgroundValue: PlaygroundValue {
         switch self {
         case .forward(let distance):
             return .dictionary(["Command": .string("Forward"), "Distance": .floatingPoint(distance)])

@@ -9,86 +9,23 @@ import UIKit
 import PlaygroundSupport
 import SwiftUI
 
-public class TextLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
-    
-    var responses: [String] = []
-    
-    public init() {
-        
-    }
+public class TextLiveViewClient : LiveViewClient<TextCommand, TextResponse> {
     
     public func write(_ coloredText: ColoredString) {
-        
-        guard Thread.isMainThread else {
-            DispatchQueue.main.sync { [unowned self] in
-                self.write(coloredText)
-            }
-            return
-        }
-        
-        guard let liveViewMessageHandler = PlaygroundPage.current.liveView as? PlaygroundRemoteLiveViewProxy else {
-            return
-        }
-        
-        liveViewMessageHandler.send(TextCommand.writeColor(coloredText).playgroundValue)
-
+        sendCommand(TextCommand.writeColor(coloredText))
     }
     
     public func write(_ text: String) {
-        print("Writing \(text)")
-        guard Thread.isMainThread else {
-            DispatchQueue.main.sync { [unowned self] in
-                self.write(text)
-            }
-            return
-        }
-        
-        let liveViewMessageHandler = PlaygroundPage.current.liveView as! PlaygroundRemoteLiveViewProxy
-        
-        liveViewMessageHandler.send(TextCommand.write(text).playgroundValue)
+        sendCommand(TextCommand.write(text))
     }
-
+    
     
     public func read(_ prompt: String) -> String {
-        return waitForResponse(.read(prompt))
-    }
-
-    private func waitForResponse(_ command: TextCommand) -> String {
-        var result: String = ""
-        guard Thread.isMainThread else {
-            DispatchQueue.main.sync { [unowned self] in
-                result = self.waitForResponse(command)
-            }
-            return result
-        }
-
-        guard let liveViewMessageHandler = PlaygroundPage.current.liveView as? PlaygroundRemoteLiveViewProxy else {
-            return result
-        }
-
-        liveViewMessageHandler.delegate = self
-        liveViewMessageHandler.send(command.playgroundValue)
-
-        repeat {
-            RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
-        } while responses.count == 0
-
-
-        return responses.remove(at: 0)
-    }
-    
-    // MARK: PlaygroundRemoteLiveViewProxyDelegate Methods
-    
-    public func remoteLiveViewProxyConnectionClosed(_ remoteLiveViewProxy: PlaygroundRemoteLiveViewProxy) {
-    }
-    
-    public func remoteLiveViewProxy(_ remoteLiveViewProxy: PlaygroundRemoteLiveViewProxy, received message: PlaygroundValue) {
-        guard let command = TextCommand(message) else {
-            return
-        }
-        
-        if case .submit(let string) = command {
-            responses.append(string)
+        let response = sendCommandAndWait(.read(prompt))
+        if case let .submit(text) = response {
+            return text
+        } else {
+            return ""
         }
     }
 }
@@ -103,7 +40,7 @@ public class TurtleHandle {
     }
     
     public func forward(_ distance: Double) {
-        liveViewClient.sendCommand(.turtleAction(id, .forward(distance)))
+        liveViewClient.sendCommandAndWait(.turtleAction(id, .forward(distance)))
     }
     
     public func backward(_ distance: Double) {
@@ -111,53 +48,70 @@ public class TurtleHandle {
     }
     
     public func rotate(_ angle: Double) {
-        liveViewClient.sendCommand(.turtleAction(id, .rotate(angle)))
+        liveViewClient.sendCommandAndWait(.turtleAction(id, .rotate(angle)))
     }
     
     public func arc(radius: Double, angle: Double) {
-        liveViewClient.sendCommand(.turtleAction(id, .arc(radius, angle)))
+        liveViewClient.sendCommandAndWait(.turtleAction(id, .arc(radius, angle)))
     }
     
     public func penUp() {
-        liveViewClient.sendCommand(.turtleAction(id, .penUp))
+        liveViewClient.sendCommandAndWait(.turtleAction(id, .penUp))
     }
     
     public func penDown(fillColor: Color = .clear) {
-        liveViewClient.sendCommand(.turtleAction(id, .penDown(fillColor)))
+        liveViewClient.sendCommandAndWait(.turtleAction(id, .penDown(fillColor)))
     }
     
     public func lineColor(_ color: Color) {
-        liveViewClient.sendCommand(.turtleAction(id, .lineColor(color)))
+        liveViewClient.sendCommandAndWait(.turtleAction(id, .lineColor(color)))
     }
     
     public func lineWidth(_ width: Double) {
-        liveViewClient.sendCommand(.turtleAction(id, .lineWidth(width)))
+        liveViewClient.sendCommandAndWait(.turtleAction(id, .lineWidth(width)))
     }
     
 }
 
-public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
-    
-    var responses: [TurtleSceneResponse] = []
-    
-    public init() {
-        
+public class LiveViewClient<Request: ConsoleMessage, Response: ConsoleMessage> : PlaygroundRemoteLiveViewProxyDelegate {
+    public func remoteLiveViewProxyConnectionClosed(_ remoteLiveViewProxy: PlaygroundSupport.PlaygroundRemoteLiveViewProxy) {
     }
     
-    @discardableResult func sendCommand(_ command : TurtleSceneCommand) -> TurtleSceneResponse? {
+    public func remoteLiveViewProxy(_ remoteLiveViewProxy: PlaygroundSupport.PlaygroundRemoteLiveViewProxy, received message: PlaygroundSupport.PlaygroundValue) {
+        guard let response = Response(message) else {
+            return
+        }
+        
+        responses.append(response)
+    }
+    
+    func sendCommand(_ command: Request) {
         guard Thread.isMainThread else {
             return DispatchQueue.main.sync { [unowned self] in
-                return self.sendCommand(command)
+                self.sendCommand(command)
             }
         }
         
         guard let liveViewMessageHandler = PlaygroundPage.current.liveView as? PlaygroundRemoteLiveViewProxy else {
-            return nil
+            return
+        }
+        
+        liveViewMessageHandler.send(command)
+    }
+    
+    @discardableResult func sendCommandAndWait(_ command: Request) -> Response {
+        guard Thread.isMainThread else {
+            return DispatchQueue.main.sync { [unowned self] in
+                return self.sendCommandAndWait(command)
+            }
+        }
+        
+        guard let liveViewMessageHandler = PlaygroundPage.current.liveView as? PlaygroundRemoteLiveViewProxy else {
+            fatalError("Could not find live view")
         }
         
         liveViewMessageHandler.delegate = self
-        liveViewMessageHandler.send(command.playgroundValue)
-        
+        liveViewMessageHandler.send(command)
         repeat {
             RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.01))
         } while responses.count == 0
@@ -165,26 +119,23 @@ public class TurtleLiveViewClient : PlaygroundRemoteLiveViewProxyDelegate  {
         return responses.remove(at: 0)
     }
     
+    var responses: [Response] = []
+    
+    public init() { }
+    
+    
+}
+
+public class TurtleLiveViewClient : LiveViewClient<TurtleSceneCommand, TurtleSceneResponse> {
     public func addTurtle() -> TurtleHandle {
-        let result = sendCommand(.addTurtle)
-        
+//        return TurtleHandle(liveViewClient: self, id: UUID())
+        let result = sendCommandAndWait(.addTurtle)
+//        
         if case .added(let id) = result {
             return TurtleHandle(liveViewClient: self, id: id)
         } else {
-            return TurtleHandle(liveViewClient: self, id: UUID())
+            fatalError("Failed to add turtle")
+//                    return TurtleHandle(liveViewClient: self, id: UUID())
         }
-    }
-    
-    // MARK: PlaygroundRemoteLiveViewProxyDelegate Methods
-    
-    public func remoteLiveViewProxyConnectionClosed(_ remoteLiveViewProxy: PlaygroundRemoteLiveViewProxy) {
-    }
-    
-    public func remoteLiveViewProxy(_ remoteLiveViewProxy: PlaygroundRemoteLiveViewProxy, received message: PlaygroundValue) {
-        guard let response = TurtleSceneResponse(message) else {
-            return
-        }
-        
-        responses.append(response)
     }
 }
