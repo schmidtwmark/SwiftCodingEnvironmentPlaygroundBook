@@ -19,13 +19,13 @@ public struct TextConsoleView: ConsoleView {
 
     public var body: some View {
         ScrollView {
-            Button {
-                console.write("Hello World!")
-            } label: {
-                Text("Test Button")
-            }
+//            Button {
+//                console.write("Hello World!")
+//            } label: {
+//                Text("Test Button")
+//            }
             HStack {
-                LazyVStack (alignment: .leading) {
+                LazyVStack (alignment: .leading, spacing: 0.0) {
                     ForEach(console.lines) { line in
                         VStack {
                             switch line.content {

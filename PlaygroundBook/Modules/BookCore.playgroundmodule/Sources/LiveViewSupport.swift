@@ -128,14 +128,11 @@ public class LiveViewClient<Request: ConsoleMessage, Response: ConsoleMessage> :
 
 public class TurtleLiveViewClient : LiveViewClient<TurtleSceneCommand, TurtleSceneResponse> {
     public func addTurtle() -> TurtleHandle {
-//        return TurtleHandle(liveViewClient: self, id: UUID())
         let result = sendCommandAndWait(.addTurtle)
-//        
         if case .added(let id) = result {
             return TurtleHandle(liveViewClient: self, id: id)
         } else {
             fatalError("Failed to add turtle")
-//                    return TurtleHandle(liveViewClient: self, id: UUID())
         }
     }
 }
