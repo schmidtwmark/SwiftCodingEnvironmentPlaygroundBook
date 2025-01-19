@@ -818,7 +818,9 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_KEY_CFBundleDisplayName = ConsoleBook;
 				INSTALL_PATH = /;
-				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
+				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.text;
+				PRODUCT_BUNDLE_IDENTIFIER = io.markschmidt.playgroundbooks.text;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = io.markschmidt.playgroundbooks.text;
 				PRODUCT_NAME = "$(PLAYGROUND_BOOK_FILE_NAME)";
 				SELECTED_API = BookAPI;
 				SELECTED_CHAPTER = Chapter1.playgroundchapter;
@@ -835,7 +837,9 @@
 				CURRENT_PROJECT_VERSION = "$(PLAYGROUND_BOOK_CONTENT_VERSION)";
 				INFOPLIST_KEY_CFBundleDisplayName = ConsoleBook;
 				INSTALL_PATH = /;
-				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
+				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.text;
+				PRODUCT_BUNDLE_IDENTIFIER = io.markschmidt.playgroundbooks.text;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = io.markschmidt.playgroundbooks.text;
 				PRODUCT_NAME = "$(PLAYGROUND_BOOK_FILE_NAME)";
 				SELECTED_API = BookAPI;
 				SELECTED_CHAPTER = Chapter1.playgroundchapter;
@@ -1067,7 +1071,9 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_KEY_CFBundleDisplayName = TurtleConsoleBook;
 				INSTALL_PATH = /;
+				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.turtle;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = io.markschmidt.playgroundbooks.turtle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SELECTED_API = TurtleAPI;
 				SELECTED_CHAPTER = Chapter2.playgroundchapter;
@@ -1086,7 +1092,9 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_KEY_CFBundleDisplayName = TurtleConsoleBook;
 				INSTALL_PATH = /;
+				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.turtle;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = io.markschmidt.playgroundbooks.turtle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SELECTED_API = TurtleAPI;
 				SELECTED_CHAPTER = Chapter2.playgroundchapter;

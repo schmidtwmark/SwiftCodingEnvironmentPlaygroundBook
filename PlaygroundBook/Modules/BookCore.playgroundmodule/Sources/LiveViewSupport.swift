@@ -11,15 +11,23 @@ import SwiftUI
 
 public class TextLiveViewClient : LiveViewClient<TextCommand, TextResponse> {
     
-    public func write(_ coloredText: ColoredString) {
-        sendCommand(TextCommand.writeColor(coloredText))
-    }
-    
+    /**
+     Write the provided string to the console
+     */
     public func write(_ text: String) {
         sendCommand(TextCommand.write(text))
     }
     
+    /**
+     Write the provided colored string to the console.
+     */
+    public func write(_ coloredText: ColoredString) {
+        sendCommand(TextCommand.writeColor(coloredText))
+    }
     
+    /**
+     Write the provided prompt to the console, wait for the user to enter a response, return the response
+     */
     public func read(_ prompt: String) -> String {
         let response = sendCommandAndWait(.read(prompt))
         if case let .submit(text) = response {
@@ -39,34 +47,58 @@ public class TurtleHandle {
         self.id = id
     }
     
+    /**
+     Move the turtle forward the specified distance
+     */
     public func forward(_ distance: Double) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .forward(distance)))
     }
     
+    /**
+     Move the turtle backward the specified distance
+     */
     public func backward(_ distance: Double) {
         forward(-distance)
     }
     
+    /**
+     Rotate the turtle by the provided number of degrees
+     */
     public func rotate(_ angle: Double) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .rotate(angle)))
     }
     
+    /**
+     Move the turtle along an arc with provided radius for a given angle
+     */
     public func arc(radius: Double, angle: Double) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .arc(radius, angle)))
     }
     
+    /**
+     Stop drawing lines
+     */
     public func penUp() {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .penUp))
     }
     
+    /**
+     Draw a line that traces the path of the turtle. Optionally specify a color to fill
+     */
     public func penDown(fillColor: Color = .clear) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .penDown(fillColor)))
     }
     
+    /**
+     Change the color of the line
+     */
     public func lineColor(_ color: Color) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .lineColor(color)))
     }
     
+    /**
+     Change the width of the line
+     */
     public func lineWidth(_ width: Double) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .lineWidth(width)))
     }
@@ -127,6 +159,10 @@ public class LiveViewClient<Request: ConsoleMessage, Response: ConsoleMessage> :
 }
 
 public class TurtleLiveViewClient : LiveViewClient<TurtleSceneCommand, TurtleSceneResponse> {
+    
+    /**
+     Add a new turtle to the screen
+     */
     public func addTurtle() -> TurtleHandle {
         let result = sendCommandAndWait(.addTurtle)
         if case .added(let id) = result {
