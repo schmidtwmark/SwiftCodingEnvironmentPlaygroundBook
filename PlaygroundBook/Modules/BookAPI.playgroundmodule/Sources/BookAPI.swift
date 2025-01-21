@@ -16,4 +16,3 @@ import BookCore
 // Manifest.plist key.
 
 public let console = TextLiveViewClient()
-

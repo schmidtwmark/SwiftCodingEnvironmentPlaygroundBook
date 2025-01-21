@@ -204,7 +204,7 @@ public class Turtle: SKSpriteNode {
         let dy = distance * sin(self.rotation)
         let start = self.position
         let end = CGPointMake(start.x + dx, start.y + dy)
-        let moveAction = SKAction.move(to: end, duration: distance / MOVEMENT_SPEED_0)
+        let moveAction = SKAction.move(to: end, duration: abs(distance) / MOVEMENT_SPEED_0)
         await self.runAsync(moveAction)
     }
     
