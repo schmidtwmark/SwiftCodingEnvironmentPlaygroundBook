@@ -29,6 +29,10 @@
 		ED59062B2D2799B2006D319A /* TurtleConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED5906202D2799B2006D319A /* TurtleConsole.swift */; };
 		ED59062C2D2799B2006D319A /* TextConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED59061E2D2799B2006D319A /* TextConsoleView.swift */; };
 		ED59062D2D2799B2006D319A /* TextConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED59061D2D2799B2006D319A /* TextConsole.swift */; };
+		EDB716792D473FCA00C8EE46 /* turtleicon.png in Resources */ = {isa = PBXBuildFile; fileRef = EDB716782D473FCA00C8EE46 /* turtleicon.png */; };
+		EDB7167A2D473FCA00C8EE46 /* turtleicon.png in Resources */ = {isa = PBXBuildFile; fileRef = EDB716782D473FCA00C8EE46 /* turtleicon.png */; };
+		EDB7167C2D473FD500C8EE46 /* texticon.png in Resources */ = {isa = PBXBuildFile; fileRef = EDB7167B2D473FD500C8EE46 /* texticon.png */; };
+		EDB7167D2D473FD500C8EE46 /* texticon.png in Resources */ = {isa = PBXBuildFile; fileRef = EDB7167B2D473FD500C8EE46 /* texticon.png */; };
 		EDC7E30F2D32AE1F00DF8898 /* Manifest.plist in Copy Book Contents */ = {isa = PBXBuildFile; fileRef = 5E086DCF2051DF0F004D8D25 /* Manifest.plist */; };
 		EDC7E3192D3607C300DF8898 /* BookAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC7E3102D36077A00DF8898 /* BookAPI.swift */; };
 		EDCF3C872D32ABDF00A47A24 /* Chapters in Copy Book Contents */ = {isa = PBXBuildFile; fileRef = 5EF2F9B62054E6F900191409 /* Chapters */; };
@@ -176,7 +180,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		5E086DC02051C5A7004D8D25 /* SwiftCodingEnvironment.playgroundbook */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftCodingEnvironment.playgroundbook; sourceTree = BUILT_PRODUCTS_DIR; };
+		5E086DC02051C5A7004D8D25 /* Text Playground.playgroundbook */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Text Playground.playgroundbook"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E086DC72051DD03004D8D25 /* BookOverridingBuildSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BookOverridingBuildSettings.xcconfig; sourceTree = "<group>"; };
 		5E086DCD2051DDB8004D8D25 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LiveView.storyboard; sourceTree = "<group>"; };
 		5E086DCF2051DF0F004D8D25 /* Manifest.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Manifest.plist; sourceTree = "<group>"; };
@@ -210,9 +214,11 @@
 		ED5906202D2799B2006D319A /* TurtleConsole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleConsole.swift; sourceTree = "<group>"; };
 		ED5906212D2799B2006D319A /* TurtleConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleConsoleView.swift; sourceTree = "<group>"; };
 		ED5906232D2799B2006D319A /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
+		EDB716782D473FCA00C8EE46 /* turtleicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = turtleicon.png; sourceTree = "<group>"; };
+		EDB7167B2D473FD500C8EE46 /* texticon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texticon.png; sourceTree = "<group>"; };
 		EDC7E3102D36077A00DF8898 /* BookAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookAPI.swift; sourceTree = "<group>"; };
 		EDC7E31E2D3607C300DF8898 /* libTurtleAPI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTurtleAPI.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		EDCF3C912D32ABDF00A47A24 /* TurtleConsoleBook.playgroundbook */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleConsoleBook.playgroundbook; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDCF3C912D32ABDF00A47A24 /* Turtle Playground.playgroundbook */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Turtle Playground.playgroundbook"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -251,11 +257,11 @@
 		5E086DA4204F706E004D8D25 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5E086DC02051C5A7004D8D25 /* SwiftCodingEnvironment.playgroundbook */,
+				5E086DC02051C5A7004D8D25 /* Text Playground.playgroundbook */,
 				5EF2F9AB2054BBF300191409 /* libBookCore.a */,
 				5E6F7E612368FB6A008CC191 /* libBookAPI.a */,
 				5EA2E3BD2056F35A00416A35 /* LiveViewTestApp.app */,
-				EDCF3C912D32ABDF00A47A24 /* TurtleConsoleBook.playgroundbook */,
+				EDCF3C912D32ABDF00A47A24 /* Turtle Playground.playgroundbook */,
 				EDC7E31E2D3607C300DF8898 /* libTurtleAPI.a */,
 			);
 			name = Products;
@@ -406,6 +412,8 @@
 		5EF2F9792054B64800191409 /* PrivateResources */ = {
 			isa = PBXGroup;
 			children = (
+				EDB7167B2D473FD500C8EE46 /* texticon.png */,
+				EDB716782D473FCA00C8EE46 /* turtleicon.png */,
 				5EF2F97E2054B6E400191409 /* ManifestPlist.strings */,
 				5E551EC42371FC3F00784365 /* Assets.xcassets */,
 				5E086DCC2051DDAE004D8D25 /* LiveView.storyboard */,
@@ -495,7 +503,7 @@
 			);
 			name = PlaygroundBook;
 			productName = PlaygroundBook;
-			productReference = 5E086DC02051C5A7004D8D25 /* SwiftCodingEnvironment.playgroundbook */;
+			productReference = 5E086DC02051C5A7004D8D25 /* Text Playground.playgroundbook */;
 			productType = "com.apple.product-type.bundle";
 		};
 		5E6F7E602368FB6A008CC191 /* BookAPI */ = {
@@ -586,7 +594,7 @@
 			);
 			name = TurtleConsoleBook;
 			productName = PlaygroundBook;
-			productReference = EDCF3C912D32ABDF00A47A24 /* TurtleConsoleBook.playgroundbook */;
+			productReference = EDCF3C912D32ABDF00A47A24 /* Turtle Playground.playgroundbook */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -647,7 +655,9 @@
 			files = (
 				5EF2F97C2054B6E400191409 /* ManifestPlist.strings in Resources */,
 				5E551EC52371FC3F00784365 /* Assets.xcassets in Resources */,
+				EDB716792D473FCA00C8EE46 /* turtleicon.png in Resources */,
 				5E086DCA2051DDAE004D8D25 /* LiveView.storyboard in Resources */,
+				EDB7167D2D473FD500C8EE46 /* texticon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -665,7 +675,9 @@
 			files = (
 				EDCF3C8A2D32ABDF00A47A24 /* ManifestPlist.strings in Resources */,
 				EDCF3C8B2D32ABDF00A47A24 /* Assets.xcassets in Resources */,
+				EDB7167A2D473FCA00C8EE46 /* turtleicon.png in Resources */,
 				EDCF3C8C2D32ABDF00A47A24 /* LiveView.storyboard in Resources */,
+				EDB7167C2D473FD500C8EE46 /* texticon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -816,9 +828,12 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(PLAYGROUND_BOOK_CONTENT_VERSION)";
 				GCC_DYNAMIC_NO_PIC = NO;
-				INFOPLIST_KEY_CFBundleDisplayName = ConsoleBook;
+				INFOPLIST_KEY_CFBundleDisplayName = "Text Playground";
 				INSTALL_PATH = /;
 				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.text;
+				PLAYGROUND_BOOK_FILE_NAME = "Text Playground";
+				PLAYGROUND_ICON = texticon.png;
+				PLAYGROUND_NAME = "Text Coding Environment";
 				PRODUCT_BUNDLE_IDENTIFIER = io.markschmidt.playgroundbooks.text;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = io.markschmidt.playgroundbooks.text;
 				PRODUCT_NAME = "$(PLAYGROUND_BOOK_FILE_NAME)";
@@ -835,9 +850,12 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(PLAYGROUND_BOOK_CONTENT_VERSION)";
-				INFOPLIST_KEY_CFBundleDisplayName = ConsoleBook;
+				INFOPLIST_KEY_CFBundleDisplayName = "Text Playground";
 				INSTALL_PATH = /;
 				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.text;
+				PLAYGROUND_BOOK_FILE_NAME = "Text Playground";
+				PLAYGROUND_ICON = texticon.png;
+				PLAYGROUND_NAME = "Text Coding Environment";
 				PRODUCT_BUNDLE_IDENTIFIER = io.markschmidt.playgroundbooks.text;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = io.markschmidt.playgroundbooks.text;
 				PRODUCT_NAME = "$(PLAYGROUND_BOOK_FILE_NAME)";
@@ -1069,12 +1087,15 @@
 				CURRENT_PROJECT_VERSION = "$(PLAYGROUND_BOOK_CONTENT_VERSION)";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				INFOPLIST_KEY_CFBundleDisplayName = TurtleConsoleBook;
+				INFOPLIST_KEY_CFBundleDisplayName = "Turtle Playground";
 				INSTALL_PATH = /;
 				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.turtle;
+				PLAYGROUND_BOOK_FILE_NAME = "Turtle Console";
+				PLAYGROUND_ICON = turtleicon.png;
+				PLAYGROUND_NAME = "Turtle Coding Environment";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = io.markschmidt.playgroundbooks.turtle;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Turtle Playground";
 				SELECTED_API = TurtleAPI;
 				SELECTED_CHAPTER = Chapter2.playgroundchapter;
 				SKIP_INSTALL = NO;
@@ -1090,12 +1111,15 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(PLAYGROUND_BOOK_CONTENT_VERSION)";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				INFOPLIST_KEY_CFBundleDisplayName = TurtleConsoleBook;
+				INFOPLIST_KEY_CFBundleDisplayName = "Turtle Playground";
 				INSTALL_PATH = /;
 				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.turtle;
+				PLAYGROUND_BOOK_FILE_NAME = "Turtle Console";
+				PLAYGROUND_ICON = turtleicon.png;
+				PLAYGROUND_NAME = "Turtle Coding Environment";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = io.markschmidt.playgroundbooks.turtle;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Turtle Playground";
 				SELECTED_API = TurtleAPI;
 				SELECTED_CHAPTER = Chapter2.playgroundchapter;
 				SKIP_INSTALL = NO;

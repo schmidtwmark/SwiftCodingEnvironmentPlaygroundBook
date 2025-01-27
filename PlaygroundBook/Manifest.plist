@@ -15,7 +15,7 @@
 	<key>SwiftVersion</key>
 	<string>$(SWIFT_VERSION)</string>
 	<key>Name</key>
-	<string>Swift Coding Environment</string>
+	<string>$(PLAYGROUND_NAME)</string>
 	<key>Chapters</key>
 	<array>
 		<string>$(SELECTED_CHAPTER)</string>
@@ -28,5 +28,7 @@
 	<string>Full</string>
 	<key>SupportsDarkMode</key>
 	<true/>
+	<key>ImageReference</key>
+	<string>$(PLAYGROUND_ICON)</string>
 </dict>
 </plist>
