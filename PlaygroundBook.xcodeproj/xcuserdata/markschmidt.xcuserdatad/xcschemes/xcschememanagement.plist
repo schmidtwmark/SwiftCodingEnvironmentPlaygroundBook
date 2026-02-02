@@ -9,35 +9,45 @@
 			<key>orderHint</key>
 			<integer>5</integer>
 		</dict>
-		<key>BookAPI.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>5</integer>
-		</dict>
 		<key>BookCore.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>1</integer>
-		</dict>
-		<key>LiveViewTestApp.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
-		<key>PlaygroundBook copy.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>PlaygroundBook.xcscheme_^#shared#^_</key>
+		<key>LiveViewTestApp.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>4</integer>
+			<integer>7</integer>
+		</dict>
+		<key>RobotAPI.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>5</integer>
+		</dict>
+		<key>RobotPlaygroundBook.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
+		<key>TextAPI.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>TextPlaygroundBook.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
 		</dict>
 		<key>TurtleAPI.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>3</integer>
+		</dict>
+		<key>TurtlePlaygroundBook.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
 		</dict>
 		<key>UserModule.xcscheme_^#shared#^_</key>
 		<dict>
@@ -47,6 +57,36 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>5E086DBF2051C5A7004D8D25</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5E6F7E602368FB6A008CC191</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5EF2F9AA2054BBF300191409</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>ED9B7DA52F3155EA004DD684</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>ED9B7DB92F31570A004DD684</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>EDC7E3142D3607C300DF8898</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>EDCF3C802D32ABDF00A47A24</key>
 		<dict>
 			<key>primary</key>

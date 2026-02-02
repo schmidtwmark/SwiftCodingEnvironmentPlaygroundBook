@@ -159,7 +159,7 @@ public class LiveViewClient<Request: ConsoleMessage, Response: ConsoleMessage> :
 }
 
 public class TurtleLiveViewClient : LiveViewClient<TurtleSceneCommand, TurtleSceneResponse> {
-    
+
     /**
      Add a new turtle to the screen
      */
@@ -170,5 +170,58 @@ public class TurtleLiveViewClient : LiveViewClient<TurtleSceneCommand, TurtleSce
         } else {
             fatalError("Failed to add turtle")
         }
+    }
+}
+
+// MARK: - Robot Support
+
+public class RobotHandle {
+    let liveViewClient: RobotLiveViewClient
+
+    init(liveViewClient: RobotLiveViewClient) {
+        self.liveViewClient = liveViewClient
+    }
+
+    /**
+     Move the robot forward one cell in its current direction
+     */
+    public func forward() {
+        liveViewClient.sendCommandAndWait(.robotAction(.forward))
+    }
+
+    /**
+     Rotate the robot 90 degrees to the right
+     */
+    public func turnRight() {
+        liveViewClient.sendCommandAndWait(.robotAction(.turnRight))
+    }
+
+    /**
+     Rotate the robot 90 degrees to the left
+     */
+    public func turnLeft() {
+        liveViewClient.sendCommandAndWait(.robotAction(.turnLeft))
+    }
+}
+
+public class RobotLiveViewClient : LiveViewClient<RobotSceneCommand, RobotSceneResponse> {
+
+    /**
+     Load a level and return a handle to control the robot
+     */
+    public func loadLevel(_ level: Level) -> RobotHandle {
+        let result = sendCommandAndWait(.loadLevel(level))
+        if case .levelLoaded = result {
+            return RobotHandle(liveViewClient: self)
+        } else {
+            fatalError("Failed to load level")
+        }
+    }
+
+    /**
+     Reset the current level to its initial state
+     */
+    public func reset() {
+        sendCommandAndWait(.reset)
     }
 }

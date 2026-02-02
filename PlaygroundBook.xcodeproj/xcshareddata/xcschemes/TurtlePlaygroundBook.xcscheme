@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EDCF3C802D32ABDF00A47A24"
-               BuildableName = "TurtleConsoleBook.playgroundbook"
+               BuildableName = "Turtle Playground.playgroundbook"
                BlueprintName = "TurtleConsoleBook"
                ReferencedContainer = "container:PlaygroundBook.xcodeproj">
             </BuildableReference>
@@ -51,7 +51,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EDCF3C802D32ABDF00A47A24"
-            BuildableName = "TurtleConsoleBook.playgroundbook"
+            BuildableName = "Turtle Playground.playgroundbook"
             BlueprintName = "TurtleConsoleBook"
             ReferencedContainer = "container:PlaygroundBook.xcodeproj">
          </BuildableReference>
