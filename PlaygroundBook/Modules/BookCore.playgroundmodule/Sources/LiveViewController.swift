@@ -1,5 +1,5 @@
 //
-//  See LICENSE folder for this template’s licensing information.
+//  See LICENSE folder for this template's licensing information.
 //
 //  Abstract:
 //  A source file which is part of the auxiliary module named "BookCore".
@@ -7,37 +7,54 @@
 //
 
 import UIKit
-import PlaygroundSupport
+@preconcurrency import PlaygroundSupport
 import SwiftUI
 import Combine
 
-//@MainActor
 public class LiveViewController<CV: ConsoleView>: UIHostingController<CodeEnvironmentView<CV>>, PlaygroundLiveViewMessageHandler {
-    
-    let console: CV.ConsoleType = CV.ConsoleType(colorScheme: .dark)
 
-    
+    // nonisolated(unsafe) since this is only accessed from the main thread
+    public nonisolated(unsafe) var console: CV.ConsoleType
+
     public init() {
-        let contentView = CodeEnvironmentView<CV>(console: console)
+        let newConsole = CV.ConsoleType(colorScheme: .dark)
+        self.console = newConsole
+        let contentView = CodeEnvironmentView<CV>(console: newConsole)
         super.init(rootView: contentView)
-    }
-    
-    public required init?(coder: NSCoder) {
-        let contentView = CodeEnvironmentView<CV>(console: console)
-        
-        super.init(rootView: contentView)
-    }
-    
-    // Implement required method to receive messages
-    public func receive(_ message: PlaygroundValue) {
-        self.console.receive(message)
-    }
-    
-    public func liveViewMessageConnectionOpened() {
-        self.console.start(messageHandler: self)
     }
 
-    public func liveViewMessageConnectionClosed() {
-        self.console.finish(.success)
+    @available(*, unavailable)
+    public required init?(coder: NSCoder) {
+        fatalError("init(coder:) not supported")
+    }
+
+    nonisolated public func receive(_ message: PlaygroundValue) {
+        MainActor.assumeIsolated {
+            console.receive(message)
+        }
+    }
+
+    nonisolated public func liveViewMessageConnectionOpened() {
+        MainActor.assumeIsolated {
+            console.start(messageHandler: self)
+        }
+    }
+
+    nonisolated public func liveViewMessageConnectionClosed() {
+        MainActor.assumeIsolated {
+            console.finish(.success)
+        }
+    }
+}
+
+// MARK: - Robot Live View Controller
+
+/// Convenience class for Robot levels that pre-loads a level
+public class RobotLiveViewController: LiveViewController<RobotConsoleView> {
+
+    public init(level: Level) {
+        // Set pending level before super.init() creates the console
+        RobotConsole.pendingLevel = level
+        super.init()
     }
 }

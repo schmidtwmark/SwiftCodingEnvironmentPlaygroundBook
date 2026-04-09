@@ -15,4 +15,5 @@ import BookCore
 // This is controlled via the book-level `UserAutoImportedAuxiliaryModules`
 // Manifest.plist key.
 
-public let console = TextLiveViewClient()
+// nonisolated(unsafe) because this is only accessed from the main thread in Swift Playgrounds
+nonisolated(unsafe) public let console = TextLiveViewClient()

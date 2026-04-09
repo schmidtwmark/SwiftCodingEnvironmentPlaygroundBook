@@ -11,7 +11,7 @@ import PlaygroundSupport
 
 let MAX_LINES = 100
 
-public enum TextCommand{
+public enum TextCommand: Sendable {
     case write(String)
     case read(String)
     case writeColor(ColoredString)
@@ -52,7 +52,7 @@ extension TextCommand : ConsoleMessage {
     }
 }
 
-public enum TextResponse {
+public enum TextResponse: Sendable {
     case submit(String)
 }
 extension TextResponse : ConsoleMessage {
@@ -83,7 +83,7 @@ extension TextResponse : ConsoleMessage {
     
 
 @MainActor
-public final class TextConsole: BaseConsole<TextConsole>, Console {
+public final class TextConsole: BaseConsole<TextConsole>, Console, @unchecked Sendable {
     
     struct Line : Identifiable {
         

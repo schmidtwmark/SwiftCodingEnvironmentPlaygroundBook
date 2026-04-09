@@ -9,12 +9,12 @@ import SwiftUI
 import SpriteKit
 import PlaygroundSupport
 
-public enum TurtleSceneCommand {
+public enum TurtleSceneCommand: Sendable {
     case addTurtle
     case turtleAction(UUID, TurtleCommand)
 }
 
-public enum TurtleSceneResponse {
+public enum TurtleSceneResponse: Sendable {
     case added(UUID)
     case actionFinished(UUID, TurtleCommand)
 }
@@ -97,7 +97,7 @@ extension TurtleSceneCommand: ConsoleMessage {
     }
 }
 
-public enum TurtleCommand {
+public enum TurtleCommand: @unchecked Sendable {
     case forward(CGFloat)
     case penUp
     case penDown(Color)
@@ -452,7 +452,7 @@ extension CGSize {
 }
 
 @MainActor
-public final class TurtleConsole: BaseConsole<TurtleConsole>, Console {
+public final class TurtleConsole: BaseConsole<TurtleConsole>, Console, @unchecked Sendable {
     
     var turtleMap: [UUID: Turtle] = [:]
     public func receive(_ message: PlaygroundSupport.PlaygroundValue) {

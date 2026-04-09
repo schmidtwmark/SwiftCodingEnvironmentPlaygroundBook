@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EDCF3C802D32ABDF00A47A24"
-               BuildableName = "Turtle Playground.playgroundbook"
-               BlueprintName = "TurtleConsoleBook"
+               BlueprintIdentifier = "FACE000D2F40000100000001"
+               BuildableName = "RobotConsoleSolvedBook"
+               BlueprintName = "RobotConsoleSolvedBook"
                ReferencedContainer = "container:PlaygroundBook.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,15 +47,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EDCF3C802D32ABDF00A47A24"
-            BuildableName = "Turtle Playground.playgroundbook"
-            BlueprintName = "TurtleConsoleBook"
-            ReferencedContainer = "container:PlaygroundBook.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

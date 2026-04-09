@@ -18,7 +18,7 @@ func timeDisplay(_ start: Date, _ end: Date) -> String{
     }
 }
 
-public enum RunState : Equatable {
+public enum RunState : Equatable, Sendable {
     case idle
     case running
     case success
@@ -93,7 +93,7 @@ struct ConsoleError: Error {
 
 
 @MainActor
-public class BaseConsole<C: Console> {
+public class BaseConsole<C: Console>: @unchecked Sendable {
     
     
     @Published public var state: RunState = .idle

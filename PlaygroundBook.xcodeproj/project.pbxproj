@@ -96,6 +96,21 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXAggregateTarget section */
+		FACE000D2F40000100000001 /* RobotConsoleSolvedBook */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = FACE00102F40000100000001 /* Build configuration list for PBXAggregateTarget "RobotConsoleSolvedBook" */;
+			buildPhases = (
+				FACE000B2F40000100000001 /* Inject Solutions */,
+			);
+			dependencies = (
+				FACE00112F40000100000011 /* PBXTargetDependency */,
+			);
+			name = RobotConsoleSolvedBook;
+			productName = RobotConsoleSolvedBook;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXContainerItemProxy section */
 		5E6F7E682368FB79008CC191 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -173,6 +188,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 5EF2F9AA2054BBF300191409;
 			remoteInfo = Book_Sources;
+		};
+		FACE00122F40000100000012 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5E2A7ADD204F611300F4E17A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED9B7DA52F3155EA004DD684;
+			remoteInfo = RobotConsoleBook;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -735,7 +757,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					5E086DBF2051C5A7004D8D25 = {
 						CreatedOnToolsVersion = 9.3;
@@ -776,6 +798,7 @@
 				EDC7E3142D3607C300DF8898 /* TurtleAPI */,
 				ED9B7DA52F3155EA004DD684 /* RobotConsoleBook */,
 				ED9B7DB92F31570A004DD684 /* RobotAPI */,
+				FACE000D2F40000100000001 /* RobotConsoleSolvedBook */,
 			);
 		};
 /* End PBXProject section */
@@ -843,6 +866,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "PLAYGROUND_BOOK_PATH=\"${BUILT_PRODUCTS_DIR}/${PLAYGROUND_BOOK_FILE_NAME}.playgroundbook\"\nPRIVATERESOURCES_FOLDER_PATH=\"${PLAYGROUND_BOOK_PATH}/Contents/PrivateResources\"\nPUBLICRESOURCES_FOLDER_PATH=\"${PLAYGROUND_BOOK_PATH}/Contents/PublicResources\"\n\nDESTINATION_FOLDER_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n\nif [[ -d \"${PRIVATERESOURCES_FOLDER_PATH}\" ]]; then\n    ditto \"${PRIVATERESOURCES_FOLDER_PATH}\" \"${DESTINATION_FOLDER_PATH}\"\nfi\n\nif [[ -d \"${PUBLICRESOURCES_FOLDER_PATH}\" ]]; then\n    ditto \"${PUBLICRESOURCES_FOLDER_PATH}\" \"${DESTINATION_FOLDER_PATH}\"\nfi\n\nmkdir -p \"${DERIVED_FILE_DIR}\"\ntouch \"${DERIVED_FILE_DIR}/embed-resources-marker\"\n";
+		};
+		FACE000B2F40000100000001 /* Inject Solutions */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Inject Solutions";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "\"${PROJECT_DIR}/inject_solutions.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -956,6 +993,11 @@
 			target = 5EF2F9AA2054BBF300191409 /* BookCore */;
 			targetProxy = EDCF3C822D32ABDF00A47A24 /* PBXContainerItemProxy */;
 		};
+		FACE00112F40000100000011 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ED9B7DA52F3155EA004DD684 /* RobotConsoleBook */;
+			targetProxy = FACE00122F40000100000012 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1036,6 +1078,7 @@
 			baseConfigurationReference = 5E0E37522065981C008FA4BE /* BuildSettings.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1087,6 +1130,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.7;
@@ -1098,6 +1142,7 @@
 			baseConfigurationReference = 5E0E37522065981C008FA4BE /* BuildSettings.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1143,6 +1188,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.7;
@@ -1153,6 +1199,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5E6F7E6D2368FC9A008CC191 /* ModuleOverridingBuildSettings.xcconfig */;
 			buildSettings = {
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -1160,6 +1207,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5E6F7E6D2368FC9A008CC191 /* ModuleOverridingBuildSettings.xcconfig */;
 			buildSettings = {
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -1171,6 +1219,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = LiveViewTestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1197,6 +1247,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				INFOPLIST_FILE = LiveViewTestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1218,6 +1270,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5E6F7E6D2368FC9A008CC191 /* ModuleOverridingBuildSettings.xcconfig */;
 			buildSettings = {
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -1225,6 +1278,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5E6F7E6D2368FC9A008CC191 /* ModuleOverridingBuildSettings.xcconfig */;
 			buildSettings = {
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -1284,6 +1338,7 @@
 			baseConfigurationReference = 5E6F7E6D2368FC9A008CC191 /* ModuleOverridingBuildSettings.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -1292,6 +1347,7 @@
 			baseConfigurationReference = 5E6F7E6D2368FC9A008CC191 /* ModuleOverridingBuildSettings.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -1300,6 +1356,7 @@
 			baseConfigurationReference = 5E6F7E6D2368FC9A008CC191 /* ModuleOverridingBuildSettings.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -1308,6 +1365,7 @@
 			baseConfigurationReference = 5E6F7E6D2368FC9A008CC191 /* ModuleOverridingBuildSettings.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -1357,6 +1415,22 @@
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = YES;
 				SelectedApi = TurtleAPI;
+			};
+			name = Release;
+		};
+		FACE000E2F40000100000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FACE000F2F40000100000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -1440,6 +1514,15 @@
 			buildConfigurations = (
 				EDCF3C8F2D32ABDF00A47A24 /* Debug */,
 				EDCF3C902D32ABDF00A47A24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FACE00102F40000100000001 /* Build configuration list for PBXAggregateTarget "RobotConsoleSolvedBook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FACE000E2F40000100000001 /* Debug */,
+				FACE000F2F40000100000001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

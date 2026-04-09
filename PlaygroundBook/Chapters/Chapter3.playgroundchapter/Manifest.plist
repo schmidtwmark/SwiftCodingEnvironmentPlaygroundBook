@@ -6,7 +6,15 @@
 	<string>Robot</string>
 	<key>Pages</key>
 	<array>
-		<string>PlaygroundPage.playgroundpage</string>
+		<string>Level1.playgroundpage</string>
+		<string>Level2.playgroundpage</string>
+		<string>Level3.playgroundpage</string>
+		<string>Level4.playgroundpage</string>
+		<string>Level5.playgroundpage</string>
+		<string>Level6.playgroundpage</string>
+		<string>Level7.playgroundpage</string>
+		<string>Level8.playgroundpage</string>
+		<string>CustomLevel.playgroundpage</string>
 	</array>
 </dict>
 </plist>

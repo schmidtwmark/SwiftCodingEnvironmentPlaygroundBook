@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+// MARK: - Cell Display State
+
+enum CellDisplayState: Equatable {
+    case wall
+    case open
+    case goal
+    case door(color: Color, isOpen: Bool)
+    case key(color: Color)
+    case laser(color: Color, isActive: Bool, orientation: LaserOrientation)
+    case teleporter(color: Color)
+}
+
 // MARK: - RobotConsoleView
 
 public struct RobotConsoleView: ConsoleView {
@@ -20,11 +32,16 @@ public struct RobotConsoleView: ConsoleView {
 
     public var body: some View {
         ZStack {
-            backgroundColor
-                .ignoresSafeArea()
+            backgroundColor.ignoresSafeArea()
 
             if let level = console.level, let robotState = console.robotState {
-                GridView(level: level, robotState: robotState, gameState: console.gameState)
+                GridView(
+                    level: level,
+                    robotState: robotState,
+                    gameState: console.gameState,
+                    levelState: console.levelState,
+                    moveCount: console.moveCount
+                )
             } else {
                 VStack(spacing: 16) {
                     Image(systemName: "square.grid.3x3")
@@ -35,18 +52,11 @@ public struct RobotConsoleView: ConsoleView {
                         .foregroundColor(.secondary)
                 }
             }
-
-            // Game state overlay
-            if case .won = console.gameState {
-                WinOverlay()
-            } else if case .lost(let reason) = console.gameState {
-                LoseOverlay(reason: reason)
-            }
         }
     }
 
     private var backgroundColor: Color {
-        colorScheme == .dark ? Color(uiColor: .systemBackground) : Color(uiColor: .secondarySystemBackground)
+        Color(white: 0.25)
     }
 }
 
@@ -56,114 +66,233 @@ struct GridView: View {
     let level: Level
     let robotState: RobotState
     let gameState: GameState
+    let levelState: LevelState
+    var moveCount: Int = 0
 
-    private let cellSize: CGFloat = 60
-    private let wallThickness: CGFloat = 4
+    private var cellSize: CGFloat {
+        let maxDim = max(level.rows, level.columns)
+        if maxDim <= 7 { return 50 }
+        if maxDim <= 9 { return 44 }
+        if maxDim <= 11 { return 38 }
+        if maxDim <= 13 { return 32 }
+        return 28
+    }
 
     var body: some View {
-        let gridWidth = CGFloat(level.gridSize.columns) * cellSize
-        let gridHeight = CGFloat(level.gridSize.rows) * cellSize
+        let gridWidth = CGFloat(level.columns) * cellSize
+        let gridHeight = CGFloat(level.rows) * cellSize
 
-        ZStack(alignment: .topLeading) {
-            // Grid cells
-            VStack(spacing: 0) {
-                ForEach(0..<level.gridSize.rows, id: \.self) { row in
-                    HStack(spacing: 0) {
-                        ForEach(0..<level.gridSize.columns, id: \.self) { column in
-                            CellView(
-                                position: Position(column: column, row: row),
-                                isGoal: Position(column: column, row: row) == level.goalPosition,
-                                cellSize: cellSize
-                            )
+        ZStack(alignment: .bottom) {
+            ZStack(alignment: .topLeading) {
+                // Cells
+                VStack(spacing: 0) {
+                    ForEach(0..<level.rows, id: \.self) { row in
+                        HStack(spacing: 0) {
+                            ForEach(0..<level.columns, id: \.self) { column in
+                                CellView(
+                                    state: displayState(at: Position(column: column, row: row)),
+                                    cellSize: cellSize
+                                )
+                            }
                         }
                     }
                 }
+
+                // Keys (uncollected)
+                ForEach(Array(level.keys.enumerated()), id: \.offset) { index, key in
+                    if !levelState.collectedKeys.contains(index) {
+                        KeyView(key: key, cellSize: cellSize)
+                    }
+                }
+
+                // Enemies
+                ForEach(Array(levelState.enemyStates.enumerated()), id: \.offset) { _, enemyState in
+                    EnemyView(position: enemyState.position, cellSize: cellSize)
+                }
+
+                // Robot
+                RobotView(
+                    position: robotState.position,
+                    direction: robotState.direction,
+                    cellSize: cellSize,
+                    isLost: gameState != .playing && gameState != .won
+                )
+            }
+            .frame(width: gridWidth, height: gridHeight)
+            .clipShape(RoundedRectangle(cornerRadius: 4))
+
+            // Color tint overlay
+            if case .won = gameState {
+                Color.green.opacity(0.3)
+                    .frame(width: gridWidth, height: gridHeight)
+                    .allowsHitTesting(false)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+            } else if case .lost = gameState {
+                Color.red.opacity(0.3)
+                    .frame(width: gridWidth, height: gridHeight)
+                    .allowsHitTesting(false)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
             }
 
-            // Walls
-            ForEach(Array(level.walls.enumerated()), id: \.offset) { _, wall in
-                WallView(wall: wall, cellSize: cellSize, thickness: wallThickness, gridSize: level.gridSize)
+            // Result banner
+            if case .won = gameState {
+                WinBanner(moveCount: moveCount, par: level.minimumMoves)
+                    .padding(.bottom, 12)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            } else if case .lost(let reason) = gameState {
+                LoseBanner(reason: reason)
+                    .padding(.bottom, 12)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
             }
 
-            // Border walls (outer edges)
-            Rectangle()
-                .stroke(Color.primary, lineWidth: wallThickness)
-                .frame(width: gridWidth, height: gridHeight)
-
-            // Robot
-            RobotView(
-                position: robotState.position,
-                direction: robotState.direction,
-                cellSize: cellSize,
-                isLost: gameState != .playing && gameState != .won
-            )
+            // Collected keys HUD
+            if !level.keys.isEmpty {
+                CollectedKeysHUD(level: level, levelState: levelState, gridWidth: gridWidth)
+            }
         }
         .frame(width: gridWidth, height: gridHeight)
+    }
+
+    private func displayState(at position: Position) -> CellDisplayState {
+        let cell = level.cells[position.row][position.column]
+        if cell == .wall { return .wall }
+
+        if position == level.goalPosition { return .goal }
+
+        for (i, door) in level.doors.enumerated() where door.position == position {
+            return .door(color: elementColor(door.color), isOpen: levelState.openDoors.contains(i))
+        }
+
+        // Show key cells as open (key icon rendered separately)
+        for (i, key) in level.keys.enumerated() where key.position == position {
+            if !levelState.collectedKeys.contains(i) { return .key(color: elementColor(key.color)) }
+        }
+
+        for laser in level.lasers where laser.position == position {
+            return .laser(color: elementColor(laser.color),
+                          isActive: laser.isActive(at: levelState.tick),
+                          orientation: laser.orientation)
+        }
+
+        for tp in level.teleporters where tp.from == position || tp.to == position {
+            return .teleporter(color: elementColor(tp.color))
+        }
+
+        return .open
     }
 }
 
 // MARK: - CellView
 
 struct CellView: View {
-    let position: Position
-    let isGoal: Bool
+    let state: CellDisplayState
     let cellSize: CGFloat
 
     var body: some View {
         ZStack {
             Rectangle()
-                .fill(isGoal ? Color.green.opacity(0.3) : Color.clear)
+                .fill(backgroundColor)
                 .frame(width: cellSize, height: cellSize)
 
-            Rectangle()
-                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                .frame(width: cellSize, height: cellSize)
+            if state != .wall {
+                Rectangle()
+                    .stroke(Color.gray.opacity(0.15), lineWidth: 0.5)
+                    .frame(width: cellSize, height: cellSize)
+            }
 
-            if isGoal {
+            switch state {
+            case .goal:
                 Image(systemName: "flag.fill")
                     .font(.system(size: cellSize * 0.4))
                     .foregroundColor(.green)
+            case .door(_, let isOpen):
+                if !isOpen {
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: cellSize * 0.3))
+                        .foregroundColor(.white)
+                }
+            case .laser(let color, let isActive, let orientation):
+                if isActive {
+                    if orientation == .horizontal || orientation == .cross {
+                        Rectangle()
+                            .fill(color)
+                            .frame(width: cellSize, height: 3)
+                    }
+                    if orientation == .vertical || orientation == .cross {
+                        Rectangle()
+                            .fill(color)
+                            .frame(width: 3, height: cellSize)
+                    }
+                    Circle()
+                        .fill(color.opacity(0.6))
+                        .frame(width: cellSize * 0.2, height: cellSize * 0.2)
+                        .shadow(color: color, radius: 4)
+                }
+            case .teleporter(let color):
+                Image(systemName: "circle.dotted")
+                    .font(.system(size: cellSize * 0.5))
+                    .foregroundColor(color.opacity(0.7))
+            default:
+                EmptyView()
             }
+        }
+        .animation(.easeInOut(duration: 0.3), value: state)
+    }
+
+    private var backgroundColor: Color {
+        switch state {
+        case .wall:
+            return Color(white: 0.25)
+        case .open, .key:
+            return Color(white: 0.92)
+        case .goal:
+            return Color.green.opacity(0.25)
+        case .door(let color, let isOpen):
+            return isOpen ? Color(white: 0.92) : color.opacity(0.7)
+        case .laser(let color, let isActive, _):
+            return isActive ? color.opacity(0.15) : Color(white: 0.92)
+        case .teleporter:
+            return Color.purple.opacity(0.08)
         }
     }
 }
 
-// MARK: - WallView
+// MARK: - KeyView
 
-struct WallView: View {
-    let wall: Wall
+struct KeyView: View {
+    let key: Key
     let cellSize: CGFloat
-    let thickness: CGFloat
-    let gridSize: GridSize
 
     var body: some View {
-        // Calculate wall position based on the edge between two cells
-        let (x, y, width, height) = wallGeometry
+        let xPos = CGFloat(key.position.column) * cellSize + cellSize / 2
+        let yPos = CGFloat(key.position.row) * cellSize + cellSize / 2
 
-        Rectangle()
-            .fill(Color.primary)
-            .frame(width: width, height: height)
-            .position(x: x, y: y)
+        Image(systemName: "key.fill")
+            .font(.system(size: cellSize * 0.35))
+            .foregroundColor(elementColor(key.color))
+            .shadow(color: elementColor(key.color).opacity(0.5), radius: 3)
+            .position(x: xPos, y: yPos)
+            .transition(.scale.combined(with: .opacity))
     }
+}
 
-    private var wallGeometry: (x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) {
-        let from = wall.from
-        let to = wall.to
+// MARK: - EnemyView
 
-        // Determine if wall is horizontal or vertical
-        if from.row == to.row {
-            // Vertical wall (between columns)
-            let col = max(from.column, to.column)
-            let x = CGFloat(col) * cellSize
-            let y = CGFloat(from.row) * cellSize + cellSize / 2
-            return (x, y, thickness, cellSize)
-        } else {
-            // Horizontal wall (between rows)
-            let row = max(from.row, to.row)
-            let x = CGFloat(from.column) * cellSize + cellSize / 2
-            let y = CGFloat(row) * cellSize
-            return (x, y, cellSize, thickness)
-        }
+struct EnemyView: View {
+    let position: Position
+    let cellSize: CGFloat
+
+    var body: some View {
+        let xPos = CGFloat(position.column) * cellSize + cellSize / 2
+        let yPos = CGFloat(position.row) * cellSize + cellSize / 2
+
+        Image(systemName: "exclamationmark.triangle.fill")
+            .font(.system(size: cellSize * 0.4))
+            .foregroundColor(.red)
+            .shadow(color: .red.opacity(0.5), radius: 3)
+            .position(x: xPos, y: yPos)
+            .animation(.easeInOut(duration: 0.3), value: position.column)
+            .animation(.easeInOut(duration: 0.3), value: position.row)
     }
 }
 
@@ -176,7 +305,6 @@ struct RobotView: View {
     let isLost: Bool
 
     var body: some View {
-        // Position robot at center of its cell
         let xPos = CGFloat(position.column) * cellSize + cellSize / 2
         let yPos = CGFloat(position.row) * cellSize + cellSize / 2
 
@@ -191,233 +319,121 @@ struct RobotView: View {
     }
 }
 
-// MARK: - WinOverlay
+// MARK: - Collected Keys HUD
 
-struct WinOverlay: View {
+struct CollectedKeysHUD: View {
+    let level: Level
+    let levelState: LevelState
+    let gridWidth: CGFloat
+
     var body: some View {
-        ZStack {
-            Color.green.opacity(0.3)
-                .ignoresSafeArea()
-
-            VStack(spacing: 20) {
-                Image(systemName: "star.fill")
-                    .font(.system(size: 80))
-                    .foregroundColor(.yellow)
-                    .shadow(color: .orange, radius: 10)
-
-                Text("You Win!")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .shadow(color: .black.opacity(0.5), radius: 5)
+        VStack {
+            HStack(spacing: 4) {
+                Spacer()
+                ForEach(Array(level.keys.enumerated()), id: \.offset) { index, key in
+                    Image(systemName: levelState.collectedKeys.contains(index) ? "key.fill" : "key")
+                        .font(.system(size: 14))
+                        .foregroundColor(
+                            levelState.collectedKeys.contains(index)
+                                ? elementColor(key.color) : .gray.opacity(0.5)
+                        )
+                }
             }
-            .padding(40)
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.green.opacity(0.8))
-            )
+            .padding(.horizontal, 6)
+            .padding(.vertical, 3)
+            .background(RoundedRectangle(cornerRadius: 6).fill(.ultraThinMaterial))
+            .padding(.top, 4)
+            .padding(.trailing, 4)
+            .frame(width: gridWidth, alignment: .trailing)
+            Spacer()
         }
-        .transition(.scale.combined(with: .opacity))
     }
 }
 
-// MARK: - LoseOverlay
+// MARK: - Win Banner
 
-struct LoseOverlay: View {
+struct WinBanner: View {
+    let moveCount: Int
+    let par: Int?
+
+    private var isPerfect: Bool {
+        guard let par = par else { return true }
+        return moveCount <= par
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: isPerfect ? "star.fill" : "checkmark.circle.fill")
+                .font(.title)
+                .foregroundColor(isPerfect ? .yellow : .white)
+                .shadow(color: isPerfect ? .orange : .clear, radius: 4)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(isPerfect ? "Perfect!" : "You Win!")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                if let par = par, !isPerfect {
+                    Text("Completed in \(moveCount) moves — can you do it in \(par)?")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.9))
+                } else {
+                    Text("\(moveCount) moves")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.9))
+                }
+            }
+        }
+        .padding(.horizontal, 28)
+        .padding(.vertical, 14)
+        .background(RoundedRectangle(cornerRadius: 16).fill(isPerfect ? Color.green : Color.orange).shadow(color: .black.opacity(0.3), radius: 8))
+    }
+}
+
+// MARK: - Lose Banner
+
+struct LoseBanner: View {
     let reason: LossReason
 
     var body: some View {
-        ZStack {
-            Color.red.opacity(0.3)
-                .ignoresSafeArea()
-
-            VStack(spacing: 20) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 80))
-                    .foregroundColor(.white)
-
+        HStack(spacing: 12) {
+            Image(systemName: "xmark.circle.fill")
+                .font(.title)
+                .foregroundColor(.white)
+            VStack(alignment: .leading, spacing: 2) {
                 Text("Game Over")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-
+                    .font(.title3).fontWeight(.bold).foregroundColor(.white)
                 Text(reason.rawValue)
-                    .font(.title2)
-                    .foregroundColor(.white.opacity(0.9))
+                    .font(.caption).foregroundColor(.white.opacity(0.9))
             }
-            .padding(40)
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.red.opacity(0.8))
-            )
         }
-        .transition(.scale.combined(with: .opacity))
+        .padding(.horizontal, 24)
+        .padding(.vertical, 12)
+        .background(RoundedRectangle(cornerRadius: 16).fill(Color.red).shadow(color: .black.opacity(0.3), radius: 8))
     }
-}
-
-// MARK: - Preview Levels
-
-enum PreviewLevels {
-    /// Simple 3x3 level with no walls
-    static let simple = Level(
-        gridSize: GridSize(columns: 3, rows: 3),
-        robotStart: Position(column: 0, row: 2),
-        robotDirection: .north,
-        goalPosition: Position(column: 2, row: 0),
-        walls: []
-    )
-
-    /// 4x4 level with walls
-    static let withWalls = Level(
-        gridSize: GridSize(columns: 4, rows: 4),
-        robotStart: Position(column: 0, row: 3),
-        robotDirection: .east,
-        goalPosition: Position(column: 3, row: 0),
-        walls: [
-            Wall(from: Position(column: 1, row: 2), to: Position(column: 1, row: 1)),
-            Wall(from: Position(column: 2, row: 2), to: Position(column: 2, row: 1)),
-            Wall(from: Position(column: 2, row: 0), to: Position(column: 3, row: 0))
-        ]
-    )
-
-    /// 5x5 maze level
-    static let maze = Level(
-        gridSize: GridSize(columns: 5, rows: 5),
-        robotStart: Position(column: 0, row: 4),
-        robotDirection: .north,
-        goalPosition: Position(column: 4, row: 0),
-        walls: [
-            Wall(from: Position(column: 1, row: 3), to: Position(column: 1, row: 2)),
-            Wall(from: Position(column: 2, row: 3), to: Position(column: 2, row: 2)),
-            Wall(from: Position(column: 2, row: 1), to: Position(column: 2, row: 0)),
-            Wall(from: Position(column: 3, row: 2), to: Position(column: 3, row: 1)),
-            Wall(from: Position(column: 3, row: 4), to: Position(column: 4, row: 4))
-        ]
-    )
 }
 
 // MARK: - Previews
 
-#Preview("Grid - Simple 3x3") {
-    GridView(
-        level: PreviewLevels.simple,
-        robotState: RobotState(
-            position: Position(column: 0, row: 2),
-            direction: .north
-        ),
-        gameState: .playing
-    )
-    .padding()
+#Preview("Simple") {
+    GridView(level: PreviewLevels.simple,
+             robotState: RobotState(position: Position(column: 1, row: 1), direction: .north),
+             gameState: .playing, levelState: LevelState()).padding()
 }
 
-#Preview("Grid - With Walls 4x4") {
-    GridView(
-        level: PreviewLevels.withWalls,
-        robotState: RobotState(
-            position: Position(column: 0, row: 3),
-            direction: .east
-        ),
-        gameState: .playing
-    )
-    .padding()
+#Preview("Lasers") {
+    GridView(level: PreviewLevels.withLasers,
+             robotState: RobotState(position: Position(column: 1, row: 1), direction: .north),
+             gameState: .playing, levelState: LevelState()).padding()
 }
 
-#Preview("Grid - Maze 5x5") {
-    GridView(
-        level: PreviewLevels.maze,
-        robotState: RobotState(
-            position: Position(column: 0, row: 4),
-            direction: .north
-        ),
-        gameState: .playing
-    )
-    .padding()
+#Preview("Won") {
+    GridView(level: PreviewLevels.simple,
+             robotState: RobotState(position: Position(column: 3, row: 3), direction: .north),
+             gameState: .won, levelState: LevelState(), moveCount: 6).padding()
 }
 
-#Preview("Grid - Robot Moved") {
-    GridView(
-        level: PreviewLevels.simple,
-        robotState: RobotState(
-            position: Position(column: 1, row: 1),
-            direction: .east
-        ),
-        gameState: .playing
-    )
-    .padding()
-}
-
-#Preview("Grid - Won State") {
-    GridView(
-        level: PreviewLevels.simple,
-        robotState: RobotState(
-            position: Position(column: 2, row: 0),
-            direction: .north
-        ),
-        gameState: .won
-    )
-    .padding()
-}
-
-#Preview("Grid - Lost State (Hit Wall)") {
-    GridView(
-        level: PreviewLevels.withWalls,
-        robotState: RobotState(
-            position: Position(column: 1, row: 2),
-            direction: .north
-        ),
-        gameState: .lost(.hitWall)
-    )
-    .padding()
-}
-
-#Preview("Win Overlay") {
-    ZStack {
-        Color.gray
-        WinOverlay()
-    }
-}
-
-#Preview("Lose Overlay - Hit Wall") {
-    ZStack {
-        Color.gray
-        LoseOverlay(reason: .hitWall)
-    }
-}
-
-#Preview("Lose Overlay - Out of Bounds") {
-    ZStack {
-        Color.gray
-        LoseOverlay(reason: .outOfBounds)
-    }
-}
-
-#Preview("Waiting State") {
-    ZStack {
-        Color(uiColor: .secondarySystemBackground)
-            .ignoresSafeArea()
-        VStack(spacing: 16) {
-            Image(systemName: "square.grid.3x3")
-                .font(.system(size: 60))
-                .foregroundColor(.secondary)
-            Text("Waiting for level...")
-                .font(.title2)
-                .foregroundColor(.secondary)
-        }
-    }
-}
-
-#Preview("All Directions") {
-    HStack(spacing: 20) {
-        ForEach(Direction.allCases, id: \.rawValue) { direction in
-            VStack {
-                Image(systemName: "arrowtriangle.up.fill")
-                    .font(.system(size: 30))
-                    .foregroundColor(.blue)
-                    .rotationEffect(.degrees(direction.rotationAngle))
-                Text("\(direction)".capitalized)
-                    .font(.caption)
-            }
-        }
-    }
-    .padding()
+#Preview("Lost") {
+    GridView(level: PreviewLevels.withWalls,
+             robotState: RobotState(position: Position(column: 2, row: 2), direction: .north),
+             gameState: .lost(.hitWall), levelState: LevelState()).padding()
 }

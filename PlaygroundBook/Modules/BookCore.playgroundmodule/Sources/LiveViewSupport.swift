@@ -1,5 +1,5 @@
 //
-//  See LICENSE folder for this template’s licensing information.
+//  See LICENSE folder for this template's licensing information.
 //
 //  Abstract:
 //  Provides supporting functions for setting up a live view.
@@ -10,21 +10,21 @@ import PlaygroundSupport
 import SwiftUI
 
 public class TextLiveViewClient : LiveViewClient<TextCommand, TextResponse> {
-    
+
     /**
      Write the provided string to the console
      */
     public func write(_ text: String) {
         sendCommand(TextCommand.write(text))
     }
-    
+
     /**
      Write the provided colored string to the console.
      */
     public func write(_ coloredText: ColoredString) {
         sendCommand(TextCommand.writeColor(coloredText))
     }
-    
+
     /**
      Write the provided prompt to the console, wait for the user to enter a response, return the response
      */
@@ -41,107 +41,97 @@ public class TextLiveViewClient : LiveViewClient<TextCommand, TextResponse> {
 public class TurtleHandle {
     let liveViewClient: TurtleLiveViewClient
     let id: UUID
-    
+
     init(liveViewClient: TurtleLiveViewClient, id: UUID) {
         self.liveViewClient = liveViewClient
         self.id = id
     }
-    
+
     /**
      Move the turtle forward the specified distance
      */
     public func forward(_ distance: Double) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .forward(distance)))
     }
-    
+
     /**
      Move the turtle backward the specified distance
      */
     public func backward(_ distance: Double) {
         forward(-distance)
     }
-    
+
     /**
      Rotate the turtle by the provided number of degrees
      */
     public func rotate(_ angle: Double) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .rotate(angle)))
     }
-    
+
     /**
      Move the turtle along an arc with provided radius for a given angle
      */
     public func arc(radius: Double, angle: Double) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .arc(radius, angle)))
     }
-    
+
     /**
      Stop drawing lines
      */
     public func penUp() {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .penUp))
     }
-    
+
     /**
      Draw a line that traces the path of the turtle. Optionally specify a color to fill
      */
     public func penDown(fillColor: Color = .clear) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .penDown(fillColor)))
     }
-    
+
     /**
      Change the color of the line
      */
     public func lineColor(_ color: Color) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .lineColor(color)))
     }
-    
+
     /**
      Change the width of the line
      */
     public func lineWidth(_ width: Double) {
         liveViewClient.sendCommandAndWait(.turtleAction(id, .lineWidth(width)))
     }
-    
+
 }
 
+/// Base class for live view clients that communicate with the console via PlaygroundValue messages.
+/// All methods run synchronously on the main thread using RunLoop spinning to wait for responses.
 public class LiveViewClient<Request: ConsoleMessage, Response: ConsoleMessage> : PlaygroundRemoteLiveViewProxyDelegate {
+
     public func remoteLiveViewProxyConnectionClosed(_ remoteLiveViewProxy: PlaygroundSupport.PlaygroundRemoteLiveViewProxy) {
     }
-    
+
     public func remoteLiveViewProxy(_ remoteLiveViewProxy: PlaygroundSupport.PlaygroundRemoteLiveViewProxy, received message: PlaygroundSupport.PlaygroundValue) {
         guard let response = Response(message) else {
             return
         }
-        
         responses.append(response)
     }
-    
+
     func sendCommand(_ command: Request) {
-        guard Thread.isMainThread else {
-            return DispatchQueue.main.sync { [unowned self] in
-                self.sendCommand(command)
-            }
-        }
-        
         guard let liveViewMessageHandler = PlaygroundPage.current.liveView as? PlaygroundRemoteLiveViewProxy else {
             return
         }
-        
+
         liveViewMessageHandler.send(command)
     }
-    
+
     @discardableResult func sendCommandAndWait(_ command: Request) -> Response {
-        guard Thread.isMainThread else {
-            return DispatchQueue.main.sync { [unowned self] in
-                return self.sendCommandAndWait(command)
-            }
-        }
-        
         guard let liveViewMessageHandler = PlaygroundPage.current.liveView as? PlaygroundRemoteLiveViewProxy else {
             fatalError("Could not find live view")
         }
-        
+
         liveViewMessageHandler.delegate = self
         liveViewMessageHandler.send(command)
         repeat {
@@ -150,12 +140,10 @@ public class LiveViewClient<Request: ConsoleMessage, Response: ConsoleMessage> :
 
         return responses.remove(at: 0)
     }
-    
+
     var responses: [Response] = []
-    
+
     public init() { }
-    
-    
 }
 
 public class TurtleLiveViewClient : LiveViewClient<TurtleSceneCommand, TurtleSceneResponse> {
@@ -202,9 +190,28 @@ public class RobotHandle {
     public func turnLeft() {
         liveViewClient.sendCommandAndWait(.robotAction(.turnLeft))
     }
+
+    /**
+     Wait one turn without moving (enemies and traps still advance)
+     */
+    public func wait() {
+        liveViewClient.sendCommandAndWait(.robotAction(.wait))
+    }
 }
 
 public class RobotLiveViewClient : LiveViewClient<RobotSceneCommand, RobotSceneResponse> {
+
+    /**
+     Get a handle to control the robot (for pre-loaded levels)
+     */
+    public func robot() -> RobotHandle {
+        let result = sendCommandAndWait(.getRobot)
+        if case .robotReady = result {
+            return RobotHandle(liveViewClient: self)
+        } else {
+            fatalError("Robot not ready - ensure level is pre-loaded in LiveView.swift")
+        }
+    }
 
     /**
      Load a level and return a handle to control the robot
@@ -216,6 +223,14 @@ public class RobotLiveViewClient : LiveViewClient<RobotSceneCommand, RobotSceneR
         } else {
             fatalError("Failed to load level")
         }
+    }
+
+    /**
+     Load a level from an ASCII string and return a handle to control the robot
+     */
+    @discardableResult
+    public func loadLevel(_ ascii: String) -> RobotHandle {
+        return loadLevel(Level.ascii(ascii))
     }
 
     /**

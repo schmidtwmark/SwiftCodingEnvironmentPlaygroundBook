@@ -46,7 +46,7 @@ extension Color {
     }
 }
 
-public struct ColoredString : Sendable {
+public struct ColoredString : @unchecked Sendable {
     struct Substring {
         var string: String
         var color: Color
