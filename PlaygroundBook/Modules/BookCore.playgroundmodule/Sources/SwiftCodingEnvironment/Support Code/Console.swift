@@ -85,6 +85,8 @@ public protocol Console : ObservableObject {
     func clear()
     
     var disableClear: Bool { get }
+
+    var zoomLevel: CGFloat { get set }
 }
 
 struct ConsoleError: Error {
@@ -100,6 +102,7 @@ public class BaseConsole<C: Console>: @unchecked Sendable {
     @Published var startTime : Date? = nil
     @Published var endTime : Date? = nil
     @Published var timeString = ""
+    @Published public var zoomLevel: CGFloat = 1.0
     
     
     public var durationString: String {

@@ -9,7 +9,9 @@ import SwiftUI
 import PlaygroundSupport
 
 extension Color {
-    init(hex: Int) {
+    /// Initialize from a 32-bit ARGB integer, e.g. `0xFF0000FF` for opaque red.
+    /// Byte order: red, green, blue, alpha (high to low).
+    public init(hex: Int) {
         self.init(
             .sRGB,
             red: Double((hex >> 24) & 0xff) / 255,
@@ -18,7 +20,63 @@ extension Color {
             opacity: Double((hex >> 00) & 0xff) / 255
         )
     }
-    
+
+    /// Initialize from a CSS-style hex string: "#RRGGBB", "RRGGBB", "#RRGGBBAA", or "RRGGBBAA".
+    /// Returns an opaque black color if the string cannot be parsed.
+    public init(hex: String) {
+        var trimmed = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.hasPrefix("#") {
+            trimmed.removeFirst()
+        }
+        guard trimmed.count == 6 || trimmed.count == 8,
+              let value = UInt64(trimmed, radix: 16) else {
+            self.init(.sRGB, red: 0, green: 0, blue: 0, opacity: 1)
+            return
+        }
+        let r, g, b, a: Double
+        if trimmed.count == 6 {
+            r = Double((value >> 16) & 0xff) / 255
+            g = Double((value >> 08) & 0xff) / 255
+            b = Double((value >> 00) & 0xff) / 255
+            a = 1.0
+        } else {
+            r = Double((value >> 24) & 0xff) / 255
+            g = Double((value >> 16) & 0xff) / 255
+            b = Double((value >> 08) & 0xff) / 255
+            a = Double((value >> 00) & 0xff) / 255
+        }
+        self.init(.sRGB, red: r, green: g, blue: b, opacity: a)
+    }
+
+    /// Factory form of `Color(hex:)` that enables leading-dot syntax,
+    /// e.g. `turtle.lineColor(.hex("ffaabb"))`.
+    public static func hex(_ string: String) -> Color {
+        Color(hex: string)
+    }
+
+    /// Factory form of `Color(hex:)` that enables leading-dot syntax,
+    /// e.g. `turtle.lineColor(.hex(0xffaabbff))`.
+    public static func hex(_ value: Int) -> Color {
+        Color(hex: value)
+    }
+
+    /// Factory form of `Color(red:green:blue:alpha:)` for leading-dot syntax,
+    /// e.g. `turtle.lineColor(.rgb(255, 170, 187))`.
+    public static func rgb(_ red: Int, _ green: Int, _ blue: Int, alpha: Int = 255) -> Color {
+        Color(red: red, green: green, blue: blue, alpha: alpha)
+    }
+
+    /// Initialize from 0-255 RGB byte components, with optional 0-255 alpha.
+    public init(red: Int, green: Int, blue: Int, alpha: Int = 255) {
+        self.init(
+            .sRGB,
+            red: Double(red) / 255,
+            green: Double(green) / 255,
+            blue: Double(blue) / 255,
+            opacity: Double(alpha) / 255
+        )
+    }
+
     var hex: Int {
         #if canImport(UIKit)
         let uiColor = UIColor(self)

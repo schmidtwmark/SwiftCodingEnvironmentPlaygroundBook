@@ -58,7 +58,8 @@ turtle.backward(10)
  turtle.penDown()
  
  turtle.penDown(fillColor: .green)
- 
+ turtle.penDown(fillColor: .hex("aabbcc"))
+
  ```
  
  
@@ -106,6 +107,22 @@ turtle.backward(10)
  */
 
 
+/*:
+# `turtle.oval(xRadius: Double, yRadius: Double, angle: Double)`
+ 
+ Moves the turtle along `angle` degrees of an arc of an oval with the provided radii
+ 
+ The turtle rotates by the same angle as it traces the path of the arc
+ 
+ The xRadius is parallel to the turtle's heading
+ The yRadius is perpendicular to the turtle's heading
+ 
+ ```
+ turtle.oval(xRadius: 10, yRadius: 20, angle: 90)
+ ```
+ 
+ */
+
 
 /*:
 # `turtle.lineColor(_ color: Color)`
@@ -115,6 +132,7 @@ turtle.backward(10)
  ```
  turtle.lineColor(.blue)
  turtle.lineColor(.green)
+ turtle.lineColor(.hex("aabbcc"))
  ```
  
  */

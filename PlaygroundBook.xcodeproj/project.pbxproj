@@ -6,6 +6,21 @@
 	objectVersion = 54;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		FACE000D2F40000100000001 /* RobotConsoleSolvedBook */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = FACE00102F40000100000001 /* Build configuration list for PBXAggregateTarget "RobotConsoleSolvedBook" */;
+			buildPhases = (
+				FACE000B2F40000100000001 /* Inject Solutions */,
+			);
+			dependencies = (
+				FACE00112F40000100000011 /* PBXTargetDependency */,
+			);
+			name = RobotConsoleSolvedBook;
+			productName = RobotConsoleSolvedBook;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		5E086DCA2051DDAE004D8D25 /* LiveView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5E086DCC2051DDAE004D8D25 /* LiveView.storyboard */; };
 		5E086DD32051E3A3004D8D25 /* Manifest.plist in Copy Book Contents */ = {isa = PBXBuildFile; fileRef = 5E086DCF2051DF0F004D8D25 /* Manifest.plist */; };
@@ -95,21 +110,6 @@
 			script = "mkdir -p \"${DERIVED_FILE_DIR}\"\n\n\"${PROJECT_DIR}\"/SupportingContent/Tools/expandBuildSettingReferences --output \"${SCRIPT_OUTPUT_FILE_0}\" --use-environment \"${SCRIPT_INPUT_FILE}\"\n";
 		};
 /* End PBXBuildRule section */
-
-/* Begin PBXAggregateTarget section */
-		FACE000D2F40000100000001 /* RobotConsoleSolvedBook */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = FACE00102F40000100000001 /* Build configuration list for PBXAggregateTarget "RobotConsoleSolvedBook" */;
-			buildPhases = (
-				FACE000B2F40000100000001 /* Inject Solutions */,
-			);
-			dependencies = (
-				FACE00112F40000100000011 /* PBXTargetDependency */,
-			);
-			name = RobotConsoleSolvedBook;
-			productName = RobotConsoleSolvedBook;
-		};
-/* End PBXAggregateTarget section */
 
 /* Begin PBXContainerItemProxy section */
 		5E6F7E682368FB79008CC191 /* PBXContainerItemProxy */ = {
@@ -869,6 +869,7 @@
 		};
 		FACE000B2F40000100000001 /* Inject Solutions */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

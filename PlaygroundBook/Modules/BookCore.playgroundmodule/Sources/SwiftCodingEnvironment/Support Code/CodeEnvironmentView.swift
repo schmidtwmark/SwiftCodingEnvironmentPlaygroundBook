@@ -25,6 +25,14 @@ public struct CodeEnvironmentView<CV: ConsoleView>: View {
                         .padding()
                         .background(Color(uiColor: .secondarySystemBackground))
                         .clipShape(.rect(topLeadingRadius: CORNER_RADIUS, topTrailingRadius: CORNER_RADIUS))
+                HStack(spacing: 4) {
+                    Image(systemName: "minus.magnifyingglass")
+                    Slider(value: $console.zoomLevel, in: 0.5...2.0, step: 0.1)
+                        .frame(width: 120)
+                    Image(systemName: "plus.magnifyingglass")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
                 Spacer()
                 if console.state != .idle {
                     HStack {

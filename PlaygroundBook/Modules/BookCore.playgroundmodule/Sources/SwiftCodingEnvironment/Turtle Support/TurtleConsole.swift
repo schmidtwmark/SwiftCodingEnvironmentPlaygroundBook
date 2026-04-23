@@ -103,6 +103,7 @@ public enum TurtleCommand: @unchecked Sendable {
     case penDown(Color)
     case rotate(CGFloat)
     case arc(CGFloat, CGFloat)
+    case oval(CGFloat, CGFloat, CGFloat)
     case lineColor(Color)
     case lineWidth(CGFloat)
 }
@@ -133,6 +134,11 @@ extension TurtleCommand : ConsoleMessage {
                 guard case let .floatingPoint(radius)? = dict["Radius"] else { return nil }
                 guard case let .floatingPoint(angle)? = dict["Angle"] else { return nil }
                 self = .arc(radius, angle)
+            case "Oval":
+                guard case let .floatingPoint(xRadius)? = dict["XRadius"] else { return nil }
+                guard case let .floatingPoint(yRadius)? = dict["YRadius"] else { return nil }
+                guard case let .floatingPoint(angle)? = dict["Angle"] else { return nil }
+                self = .oval(xRadius, yRadius, angle)
             case "LineColor":
                 guard case let .integer(hex)? = dict["Color"] else { return nil }
                 self = .lineColor(Color(hex: hex))
@@ -155,6 +161,13 @@ extension TurtleCommand : ConsoleMessage {
             return .dictionary(["Command": .string("Rotate"), "Angle": .floatingPoint(angle)])
         case .arc(let radius, let angle):
             return .dictionary(["Command": .string("Arc"), "Radius": .floatingPoint(radius), "Angle": .floatingPoint(angle)])
+        case .oval(let xRadius, let yRadius, let angle):
+            return .dictionary([
+                "Command": .string("Oval"),
+                "XRadius": .floatingPoint(xRadius),
+                "YRadius": .floatingPoint(yRadius),
+                "Angle": .floatingPoint(angle)
+            ])
         case .lineColor(let color):
             return .dictionary(["Command": .string("LineColor"), "Color": .integer(color.hex)])
         case .lineWidth(let width):
@@ -249,6 +262,70 @@ public class Turtle: SKSpriteNode {
             
     }
 
+    // Trace an elliptical arc with two radii for @param angle degrees.
+    // xRadius is the semi-axis along the turtle's heading; yRadius is perpendicular
+    // (the distance from the turtle to the ellipse center, matching `arc`'s radius).
+    // Positive angles go left, negative angles go right.
+    public func oval(xRadius: CGFloat, yRadius: CGFloat, angle: CGFloat) async {
+        guard xRadius >= 0, yRadius >= 0, angle != 0 else { return }
+
+        let counterclockwise = angle >= 0
+        let directionMultiplier: CGFloat = counterclockwise ? 1.0 : -1.0
+        let startT: CGFloat = counterclockwise ? (3 * .pi / 2) : (.pi / 2)
+        let deltaT = angle.radians
+
+        let steps = max(Int(abs(angle) / 2.0), 16)
+        let cosR = cos(self.rotation)
+        let sinR = sin(self.rotation)
+
+        var offsets: [CGPoint] = []
+        var tangentAngles: [CGFloat] = []
+
+        for i in 0...steps {
+            let t = startT + CGFloat(i) / CGFloat(steps) * deltaT
+            let localX = xRadius * cos(t)
+            let localY = directionMultiplier * yRadius + yRadius * sin(t)
+            let dx = localX * cosR - localY * sinR
+            let dy = localX * sinR + localY * cosR
+            offsets.append(CGPoint(x: dx, y: dy))
+
+            let localTanX: CGFloat = counterclockwise ? -xRadius * sin(t) : xRadius * sin(t)
+            let localTanY: CGFloat = counterclockwise ? yRadius * cos(t) : -yRadius * cos(t)
+            let tanX = localTanX * cosR - localTanY * sinR
+            let tanY = localTanX * sinR + localTanY * cosR
+            tangentAngles.append(atan2(tanY, tanX))
+        }
+
+        var segmentLengths: [CGFloat] = []
+        var arcLength: CGFloat = 0
+        for i in 1...steps {
+            let ddx = offsets[i].x - offsets[i - 1].x
+            let ddy = offsets[i].y - offsets[i - 1].y
+            let len = sqrt(ddx * ddx + ddy * ddy)
+            segmentLengths.append(len)
+            arcLength += len
+        }
+        let totalDuration = arcLength / MOVEMENT_SPEED_0
+
+        var actions: [SKAction] = []
+        for i in 1...steps {
+            let ddx = offsets[i].x - offsets[i - 1].x
+            let ddy = offsets[i].y - offsets[i - 1].y
+            let segmentDuration = arcLength > 0 ? totalDuration * segmentLengths[i - 1] / arcLength : 0
+
+            var rotationDelta = tangentAngles[i] - tangentAngles[i - 1]
+            if rotationDelta > .pi { rotationDelta -= 2 * .pi }
+            if rotationDelta < -.pi { rotationDelta += 2 * .pi }
+
+            let move = SKAction.moveBy(x: ddx, y: ddy, duration: segmentDuration)
+            let rotate = SKAction.rotate(byAngle: rotationDelta, duration: segmentDuration)
+            actions.append(SKAction.group([move, rotate]))
+        }
+
+        self.rotation += deltaT
+        await self.runAsync(SKAction.sequence(actions))
+    }
+
    public func rotate(_ angle: CGFloat) async {
        self.rotation += angle.radians
        let rotateAction = SKAction.rotate(byAngle: angle.radians, duration: abs(angle / ROTATION_SPEED_0))
@@ -306,6 +383,8 @@ public class Turtle: SKSpriteNode {
             await rotate(angle)
         case .arc(let radius, let angle):
             await arc(radius: radius, angle: angle)
+        case .oval(let xRadius, let yRadius, let angle):
+            await oval(xRadius: xRadius, yRadius: yRadius, angle: angle)
         case .lineColor(let color):
             await setColor(UIColor(color))
         case .lineWidth(let width):

@@ -76,6 +76,16 @@ public class TurtleHandle {
     }
 
     /**
+     Move the turtle along an elliptical arc with two radii for a given angle.
+     `xRadius` is along the turtle's heading; `yRadius` is perpendicular
+     (the distance from the turtle to the ellipse center).
+     Passing the same value for both radii is equivalent to `arc(radius:angle:)`.
+     */
+    public func oval(xRadius: Double, yRadius: Double, angle: Double) {
+        liveViewClient.sendCommandAndWait(.turtleAction(id, .oval(xRadius, yRadius, angle)))
+    }
+
+    /**
      Stop drawing lines
      */
     public func penUp() {

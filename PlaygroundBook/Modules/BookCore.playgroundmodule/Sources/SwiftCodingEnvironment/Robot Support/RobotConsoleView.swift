@@ -42,6 +42,8 @@ public struct RobotConsoleView: ConsoleView {
                     levelState: console.levelState,
                     moveCount: console.moveCount
                 )
+                .scaleEffect(console.zoomLevel)
+                .animation(.easeInOut(duration: 0.2), value: console.zoomLevel)
             } else {
                 VStack(spacing: 16) {
                     Image(systemName: "square.grid.3x3")

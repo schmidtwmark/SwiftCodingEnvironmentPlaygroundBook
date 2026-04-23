@@ -17,36 +17,49 @@ public struct TextConsoleView: ConsoleView {
     @ObservedObject var console: TextConsole
     @FocusState private var isTextFieldFocused: Bool
 
+    private var hasActiveInput: Bool {
+        console.lines.last?.content == .input
+    }
+
     public var body: some View {
-        ScrollView {
-//            Button {
-//                console.write("Hello World!")
-//            } label: {
-//                Text("Test Button")
-//            }
-            HStack {
+        ScrollViewReader { proxy in
+            ScrollView {
                 LazyVStack (alignment: .leading, spacing: 0.0) {
                     ForEach(console.lines) { line in
-                        VStack {
-                            switch line.content {
-                            case .output(let text):
-                                Text(text)
-                            case .input:
-                                TextField("", text: $console.userInput)
-                                    .onSubmit {
-                                        console.submitInput(true)
-                                    }
-                                    .focused($isTextFieldFocused)
-                            }
-                        }.frame(width: .infinity, height: 25.0)
+                        switch line.content {
+                        case .output(let text):
+                            Text(text)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .fixedSize(horizontal: false, vertical: true)
+                        case .input:
+                            TextField("", text: $console.userInput)
+                                .onSubmit {
+                                    console.submitInput(true)
+                                }
+                                .focused($isTextFieldFocused)
+                                .id("activeInput")
+                        }
                     }
                 }
-                Spacer()
+                .padding()
+                .font(.system(size: 17 * console.zoomLevel, design: .monospaced))
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if hasActiveInput {
+                        isTextFieldFocused = true
+                    }
+                }
             }
-            .padding()
+            .defaultScrollAnchor(.bottom)
+            .scrollIndicators(.visible)
+            .onChange(of: console.lines.count) {
+                if hasActiveInput {
+                    withAnimation {
+                        proxy.scrollTo("activeInput", anchor: .bottom)
+                    }
+                }
+            }
         }
-        .defaultScrollAnchor(.bottom)
-        .scrollIndicators(.visible)
         .task {
             console.setFocus = { focus in
                 isTextFieldFocused = focus
