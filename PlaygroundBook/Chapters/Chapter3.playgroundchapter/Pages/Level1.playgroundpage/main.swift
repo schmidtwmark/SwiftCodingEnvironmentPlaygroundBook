@@ -11,12 +11,4 @@ let robot = robotConsole.robot()
 // robot.forward()
 // robot.forward()
 //#-end-hidden-code
-// Level 1: Navigate from top-left to bottom-right
-// The robot starts facing north (up)
-//
-// Available commands:
-//   robot.forward()   - Move one cell forward
-//   robot.turnRight() - Turn 90 degrees right
-//   robot.turnLeft()  - Turn 90 degrees left
-
-// Write your solution here:
+// Write your code here:

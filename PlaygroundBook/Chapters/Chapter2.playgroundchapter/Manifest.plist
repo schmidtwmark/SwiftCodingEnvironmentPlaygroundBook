@@ -6,6 +6,9 @@
 	<string>Turtle</string>
 	<key>Pages</key>
 	<array>
+		<string>Square.playgroundpage</string>
+		<string>Star.playgroundpage</string>
+		<string>Snowman.playgroundpage</string>
 		<string>PlaygroundPage.playgroundpage</string>
 		<string>README.playgroundpage</string>
 	</array>

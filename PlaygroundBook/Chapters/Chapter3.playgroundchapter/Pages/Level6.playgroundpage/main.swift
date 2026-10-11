@@ -28,12 +28,4 @@ let robot = robotConsole.robot()
 // robot.turnLeft()
 // robot.forward()
 //#-end-hidden-code
-// Level 6: Teleporters
-// Use teleporter pairs ( ) to reach the sealed room
-//
-// Available commands:
-//   robot.forward()   - Move one cell forward
-//   robot.turnRight() - Turn 90 degrees right
-//   robot.turnLeft()  - Turn 90 degrees left
-
-// Write your solution here:
+// Write your code here:

@@ -1,0 +1,296 @@
+# What each page version must do in the Mac harness (read by check-results.py).
+# starter and solution come straight from the pages (Chapter9, Chapter10, Chapter11) (solution = the answer-key page);
+# every other version is variants/<page>/<name>.swift under the page's real hidden code.
+# fallback-* versions prove the first-line rule: a page function whose first line differs from the
+# one the engine looks for (or a missing one) quietly falls back to the built-in, and the checks
+# show the exact first line.
+#
+# columns (tab separated):
+#   version   checks: ✅/❌ per check in order ("-" = page has no checks)
+#   hint      text the first ❌ hint must contain ("-" = no hint expected)
+#   bot       complete = the bot finishes the page in at least 1 of the seeds
+#             none     = the page is never completed (a ❌ check blocks the 🚩, or the level can't be beaten)
+#             any      = not checked (see the note)
+#   fuzz      gate       = 500 random-input runs: the 🚩 is never reached unlocked and never completed
+#             nocomplete = 500 random-input runs: never "Page complete"
+#             -          = no random runs
+#   note
+#   warn      text the panel's "⚠️ The engine can't find your ..." line must contain while the bot plays
+#             ("-" = no such line)
+01-walk/starter	✅❌❌	Holding ◀ didn't move you	none	gate	the page as students get it	-
+01-walk/solution	✅✅✅	-	complete	-	answer key	-
+01-walk/alt-separate-ifs	✅✅✅	-	complete	-	speedX = 0 first, then two ifs	-
+01-walk/elseif-next-line	✅✅✅	-	complete	-	else if typed on the starter's blank line, below the comment	-
+01-walk/fallback-deltatime-int	❌❌❌	func updatePlayer(player: Player) {	none	-	proof: deltaTime: Int	-
+01-walk/fallback-label	❌❌❌	func updatePlayer(player: Player) {	none	-	proof: label player -> p	-
+01-walk/fallback-v2-deltatime	❌❌❌	func updatePlayer(player: Player) {	none	-	proof: the v2 first line, with deltaTime: Double	-
+01-walk/fallback-omitted	❌❌❌	func updatePlayer(player: Player) {	none	-	proof: no updatePlayer at all -> the built-in one	-
+01-walk/fallback-type-thing	❌❌❌	func updatePlayer(player: Player) {	none	-	proof: player: Thing	-
+01-walk/fallback-v1-name	❌❌❌	func updatePlayer(player: Player) {	none	-	proof: the v1 func updatePlayer()	-
+01-walk/left-outside-func	✅❌❌	Holding ◀ didn't move you	none	-	the ◀ if pasted below the function	-
+01-walk/left-zero-minus	✅✅✅	-	complete	-	player.speedX = 0 - 6	-
+01-walk/stretch-float	✅✅✅	-	complete	-	▲ floats up	-
+01-walk/stretch-hero	✅✅✅	-	complete	-	Try it: 🦊 and speed 12	-
+01-walk/wrong-copy-right-elseif	✅❌✅	Holding ◀ didn't move you	none	nocomplete	else if isPressed(.right) for ◀	-
+01-walk/wrong-copy-right	❌❌❌	Check your ifs	none	nocomplete	copied the ▶ if, changed only 6 to -6	-
+01-walk/wrong-else-is-left	✅✅❌	The else runs when no button is held, so it should stop you	none	nocomplete	else used for walking left	-
+01-walk/wrong-left-x	✅❌✅	player.speedX = -6. The engine moves you by speedX	none	nocomplete	◀ by player.x -= 6, ▶ by speed	-
+01-walk/wrong-noelse	✅✅❌	You keep sliding after you let go	none	nocomplete	no else: speedX stays 6 or -6 (the page's predict question)	-
+01-walk/wrong-noif	❌✅❌	You move even when no button is held	none	nocomplete	player.speedX = -6 outside the if	-
+01-walk/wrong-plus-equals	❌❌✅	▶ makes you go faster and faster	none	nocomplete	+= 6 / -= 6: speeds up every frame	-
+01-walk/wrong-plus	✅❌✅	◀ moved you RIGHT	none	nocomplete	6 under ◀	-
+01-walk/wrong-separate-else	❌✅✅	join them into one chain	none	nocomplete	two ifs; the else of the ◀ if undoes ▶	-
+01-walk/wrong-x-moves	❌❌✅	You moved by changing player.x. Move with your speed instead: player.speedX = 6	none	nocomplete	v1-style player.x += 6: moving by position is caught on every page, like the crab's	-
+02-fall/starter	❌❌❌	You didn't fall. Gravity changes your speed	none	gate	the page as students get it	-
+02-fall/solution	✅✅✅	-	complete	-	answer key	-
+02-fall/fallback-label	❌❌❌	func updatePlayer(player: Player) {	none	-	proof: label player -> hero (the body still uses the global player)	-
+02-fall/gravity-first	✅✅✅	-	complete	-	gravity as the first line	-
+02-fall/gravity-outside-func	❌❌❌	You didn't fall	none	-	gravity line below the function	-
+02-fall/stretch-jetpack	✅✅✅	-	complete	-	▲ adds speed	-
+02-fall/stretch-jupiter	✅✅✅	-	complete	-	Try it: -= 2 (Jupiter, same as page 10)	-
+02-fall/stretch-zero	❌❌❌	You didn't fall	none	-	Try it: -= 0 floats again	-
+02-fall/wrong-assign	✅❌❌	because your speed never changes	none	nocomplete	player.speedY = -1 (= instead of -=)	-
+02-fall/wrong-inelse	❌✅✅	You only fall when no button is held	none	nocomplete	gravity inside the else	-
+02-fall/wrong-inif	❌❌❌	outside the ifs	none	nocomplete	gravity inside the ◀ branch	-
+02-fall/wrong-steady	✅❌✅	You fall at a steady speed	none	nocomplete	player.y -= 3	-
+02-fall/wrong-up	❌❌❌	You floated UP	none	nocomplete	speedY += 1	-
+03-jump/starter	✅❌	Holding ▲ lets you fly!	none	nocomplete	the page as students get it (can reach the 🚩, gets "Almost!")	-
+03-jump/solution	✅✅	-	complete	-	answer key	-
+03-jump/ground-outer	✅✅	-	complete	-	ifs nested the other way round	-
+03-jump/jump-12	✅✅	-	none	-	passes, but can't clear the 2-block wall (the page's predict question: no)	-
+03-jump/justpressed	✅✅	-	complete	-	justPressed(.up)	-
+03-jump/stretch-tuned	✅✅	-	complete	-	Try it: jump 25, gravity 2	-
+03-jump/wrong-autobounce	❌✅	You jump even when ▲ isn't pressed	none	nocomplete	isOnGround() in place of isPressed(.up)	-
+03-jump/wrong-nogravity	✅❌	You jumped and never came back down	none	nocomplete	gravity line deleted	-
+03-jump/wrong-zero-first	✅❌	Holding ▲ lets you fly!	none	nocomplete	speedY == 0, before gravity	-
+03-jump/wrong-zero	❌❌	Pressing ▲ didn't lift you	none	nocomplete	speedY == 0 instead of isOnGround(), after gravity	-
+04-coins/starter	❌❌	Touching a coin didn't change the score	none	gate	the page as students get it	-
+04-coins/solution	✅✅	-	complete	-	answer key	-
+04-coins/alt-coin-flies	✅❌	Each coin counted once, but it's still in the game	none	-	a coin that flies up (the engine moves coins by speed too); still touching for a few frames	-
+04-coins/fallback-label	❌❌	func playerTouchedCoin(coin: Coin) {	none	-	proof: label coin -> c	-
+04-coins/fallback-v1-name	❌❌	func playerTouchedCoin(coin: Coin) {	none	-	proof: the v1 name coinTouchedPlayer()	-
+04-coins/remove-first	✅✅	-	complete	-	remove, then score	-
+04-coins/stretch-hop	✅✅	-	complete	-	Try it: hop	-
+04-coins/worth-10	✅✅	-	complete	-	Try it: worth 10	-
+04-coins/wrong-noremove	✅❌	because a coin keeps touching you every frame	none	nocomplete	Step 1 only	-
+04-coins/wrong-noscore	❌❌	Touching a coin didn't change the score	none	nocomplete	coin.remove() only	-
+04-coins/wrong-player	✅❌	You got hurt! Inside playerTouchedCoin, coin is the coin	none	nocomplete	player.remove()	-
+05-score/starter	❌❌	Nothing shows up. In updateGame, add	none	nocomplete	the page as students get it	-
+05-score/solution	✅✅	-	complete	-	answer key	-
+05-score/wrong-quotes	❌❌	Inside quotes, everything is just text	none	nocomplete	the predict question: the letters "game.score"	-
+05-score/wrong-typed-number	❌❌	Your text stays the same when game.score changes	none	nocomplete	a number typed into the text	-
+05-score/wrong-other-number	❌❌	Use String(game.score)	none	nocomplete	String(game.deaths) by mistake	-
+05-score/wrong-in-coin	❌❌	Nothing shows up	none	nocomplete	the predict question: showText in playerTouchedCoin (check 2 says: only in the coin frame)	-
+05-score/wrong-in-startgame	❌❌	Nothing shows up	none	nocomplete	showText in startGame: shown on frame 1 only	-
+05-score/wrong-if	✅❌	Your score disappears on some frames	none	nocomplete	shown only once the score is above 0	-
+05-score/worth-10	✅✅	-	complete	-	Try it: each coin worth 10	-
+05-score/two-lines	✅✅	-	complete	-	Try it: a second line	-
+05-score/alt-in-updateplayer	✅❌	Your score is one frame late	none	-	shown from updatePlayer: before the coin is counted, so one frame late in the coin frame	-
+05-score/fallback-label	❌❌	func updateGame(game: Game) {	none	-	proof: label game -> g	-
+05-score/fallback-no-parameter	❌❌	func updateGame(game: Game) {	none	-	proof: func updateGame() with no parameter	-
+e01-sounds/starter	❌❌	Grabbing a coin is silent	none	nocomplete	the page as students get it	-
+e01-sounds/solution	✅✅	-	complete	-	answer key	-
+e01-sounds/wrong-coin-in-update	❌❌	plays 60 times a second	none	nocomplete	the coin sound at the bottom of updatePlayer: every frame	-
+e01-sounds/wrong-jump-buzz	✅❌	buzzes	none	nocomplete	the predict question: the jump sound right under if isPressed(.up)	-
+e01-sounds/wrong-no-remove	❌✅	again and again	none	nocomplete	coin.remove() deleted: the coin keeps touching you	-
+e01-sounds/wrong-jump-justpressed	✅❌	Each jump should play its sound once	none	nocomplete	a sound on each press of ▲, not on each jump (holding ▲ jumps again and again)	-
+e01-sounds/step1-only	✅❌	Jumping is silent	none	-	Step 1 only	-
+e01-sounds/try-boing-powerup	✅✅	-	complete	-	Try it: a .boing jump, and .powerUp at 8 coins	-
+e01-sounds/fallback-label	❌✅	func playerTouchedCoin(coin: Coin) {	none	-	proof: label coin -> c (the Extra page built-in counts the coin, silently)	-
+e02-sparkles/starter	❌❌	Grabbing a coin makes no sparkles	none	nocomplete	the page as students get it	-
+e02-sparkles/solution	✅✅	-	complete	-	answer key	-
+e02-sparkles/wrong-player-burst	❌✅	Your sparkles come out of the player	none	nocomplete	player.burst in playerTouchedCoin	-
+e02-sparkles/wrong-trail-only	❌❌	A burst every frame is a trail	none	nocomplete	only the trail Try-it	-
+e02-sparkles/wrong-dust-buzz	✅❌	Dust comes out every frame	none	nocomplete	the dust right under if isPressed(.up)	-
+e02-sparkles/wrong-no-remove	❌✅	again and again	none	nocomplete	coin.remove() deleted	-
+e02-sparkles/try-trail-plus-one	✅✅	-	complete	-	Try it: a big burst, a "+1", a shake and a trail	-
+e02-sparkles/remove-first	✅✅	-	complete	-	burst after coin.remove(): the burst remembers where the coin was	-
+e02-sparkles/fallback-label	❌✅	func playerTouchedCoin(coin: Coin) {	none	-	proof: label coin -> c	-
+e03-backgrounds/starter	❌❌	The sky is one color	none	nocomplete	the page as students get it	-
+e03-backgrounds/solution	✅✅	-	complete	-	answer key	-
+e03-backgrounds/step1-only	✅❌	One layer can	none	-	Step 1 only: one layer	-
+e03-backgrounds/wrong-same-distance	✅❌	Your layers all have distance 5	none	nocomplete	both layers at distance 5: they scroll together	-
+e03-backgrounds/wrong-horizon-same	❌✅	the same as skyColor	none	nocomplete	horizonColor is the sky color	-
+e03-backgrounds/try-night-preset	✅✅	-	complete	-	Try it: the night preset, a moon and snow (the preset sets the horizon; the two layers are the page's own)	-
+e03-backgrounds/try-bricks-weather	✅✅	-	complete	-	Try it: bricks and falling leaves; a preset set later replaces the sky, then the page sets it again	-
+e03-backgrounds/preset-only	✅❌	There are no layers of your own	none	-	a preset only: its layers are not the page's own	-
+e03-backgrounds/layer-in-script	✅❌	One layer can	none	-	the second layer added from startPlayer: Settings are read after the top-level code (the layer still shows in the game)	-
+e04-boing/starter	❌	The 🍄 didn't bounce you	none	gate	the page as students get it	-
+e04-boing/solution	✅	-	complete	-	answer key	-
+e04-boing/wrong-plus-equals	❌	You shot into space	none	nocomplete	+= 25: adds 25 again every frame you touch the 🍄	-
+e04-boing/wrong-jump-size	❌	That's only a jump	none	gate	a jump's speed: can't clear 4 blocks	-
+e04-boing/wrong-negative	❌	Up is positive	none	gate	speedY -25	-
+e04-boing/try-super-spring	✅	-	complete	-	Try it: a super spring of 40, a new look and a sound	-
+e04-boing/fallback-label	❌	func playerTouchedSpring(spring: Spring) {	none	-	proof: label spring -> s	-
+e05-heromoves/starter	❌❌	Your hero looks the same in the air	none	nocomplete	the page as students get it	-
+e05-heromoves/solution	✅✅	-	complete	-	answer key	-
+e05-heromoves/step1-only	✅❌	Walking looks the same as standing	none	-	Step 1 only	-
+e05-heromoves/hint-pasted	✅❌	Walking looks the same as standing	none	-	the first hint's line pasted as written (one line)	-
+e05-heromoves/wrong-air-sticks	❌❌	After landing, your hero keeps its air look	none	nocomplete	an air look, but nothing sets the standing look again	-
+e05-heromoves/wrong-walk-sticks	❌❌	After landing, your hero keeps its air look	none	nocomplete	no standing look at all: the walking and air looks stick	-
+e05-heromoves/try-flipbook	✅✅	-	complete	-	Try it: a flip-book run, and 😱 when falling fast	-
+e05-heromoves/fallback-label	❌❌	func updatePlayer(player: Player) {	none	-	proof: label player -> p (the built-in walks, but never changes the look)	-
+e06-stopwatch/starter	❌❌	game.timer never changes	none	nocomplete	the page as students get it	-
+e06-stopwatch/solution	✅✅	-	complete	-	answer key (with the 🏁 seconds message under the banner)	-
+e06-stopwatch/wrong-no-divide	✅❌	Your stopwatch shows frames, not seconds	none	nocomplete	String(game.timer): frames	-
+e06-stopwatch/wrong-twice	❌✅	Your timer counts 2 every frame	none	nocomplete	counted twice	-
+e06-stopwatch/wrong-reset	❌✅	game.timer went back down	none	nocomplete	starts over every second (125 and 3590 never hit 60, so the seconds check passes)	-
+e06-stopwatch/wrong-no-show	✅❌	Show the seconds every frame	none	nocomplete	Step 1 only	-
+e06-stopwatch/wrong-in-startgame	❌✅	In 125 frames your timer counted 1	none	nocomplete	the count in startGame: runs once	-
+e06-stopwatch/try-limit	✅✅	-	complete	-	Try it: a 30-second limit	-
+e06-stopwatch/try-best-time	✅✅	-	complete	-	Try it: a best time in a top-level var	-
+e06-stopwatch/fallback-label	❌❌	which only shows the ⭐ score. Its first line must be exactly func updateGame(game: Game) {	none	-	proof: label game -> g (the Extra page built-in shows the ⭐ score)	-
+e07-lockedflag/starter	❌❌	Your 🚩 wins even with coins left	none	nocomplete	the page as students get it	-
+e07-lockedflag/solution	✅✅	-	complete	-	answer key	-
+e07-lockedflag/wrong-no-message	✅❌	shows nothing	none	nocomplete	no else	-
+e07-lockedflag/wrong-no-number	✅❌	Your message doesn't say how many coins are left	none	nocomplete	a message with no number	-
+e07-lockedflag/wrong-inverted	❌❌	Your 🚩 wins even with coins left	none	nocomplete	> 0 instead of == 0	-
+e07-lockedflag/wrong-never	❌✅	Your 🚩 never lets you win	none	nocomplete	the wrong number: never wins	-
+e07-lockedflag/try-enemies-too	✅✅	-	complete	-	Try it: enemies too (nested ifs, no &&)	-
+e07-lockedflag/try-corner	✅✅	-	complete	-	Try it: coins left in the corner	-
+e07-lockedflag/fallback-param	❌❌	Your 🚩 still wins right away	none	-	proof: playerTouchedFlag(flag: Thing) is another function: the built-in wins	-
+e07-lockedflag/try-score-banner	✅✅	-	complete	-	Try it: your score under the win banner	-
+06-crab/starter	❌❌	A crab stood still	none	nocomplete	the page as students get it	-
+06-crab/solution	✅✅	-	complete	-	answer key	-
+06-crab/fallback-deltatime-int	✅❌	func updateCrab(crab: Crab) {	none	-	proof: deltaTime: Int	-
+06-crab/fallback-label-c	✅❌	func updateCrab(crab: Crab) {	none	-	proof: label crab -> c	-
+06-crab/fallback-v2-deltatime	✅❌	func updateCrab(crab: Crab) {	none	-	proof: the v2 first line, with deltaTime: Double	-
+06-crab/fallback-omit-both	❌❌	func startCrab(crab: Crab) { and func updateCrab(crab: Crab) {	none	-	proof: both left out	-
+06-crab/fallback-omit-start	❌❌	func startCrab(crab: Crab) {	none	-	proof: startCrab left out	-
+06-crab/fallback-omit-update	✅❌	func updateCrab(crab: Crab) {	none	-	proof: updateCrab left out -> built-in (does nothing)	-
+06-crab/fallback-start-label	❌❌	func startCrab(crab: Crab) {	none	-	proof: startCrab label crab -> c	-
+06-crab/fallback-type-enemy	✅❌	func updateCrab(crab: Crab) {	none	-	proof: crab: Enemy (the exact built-in wins over the student's wider type)	-
+06-crab/fast-5	✅✅	-	complete	-	speed 5	-
+06-crab/if-else-signs	✅✅	-	complete	-	if/else on the sign	-
+06-crab/slow-1	✅✅	-	any	-	speed 1: needs 664 frames to touch both walls (bot results noisy with slow crabs)	-
+06-crab/start-right	✅✅	-	complete	-	crabs start walking right	-
+06-crab/stretch-ledge	✅✅	-	complete	-	Bonus: facingLedge()	-
+06-crab/times-minus-1	✅✅	-	complete	-	crab.speedX * -1	-
+06-crab/wrong-flip-always	❌❌	A crab wiggles in place	none	nocomplete	flip with no if	-
+06-crab/wrong-flip-minus-equals	✅❌	crab.speedX -= crab.speedX makes 0	none	nocomplete	-= instead of = - (the speed becomes 0)	-
+06-crab/wrong-noflip	✅❌	A crab got stuck at a wall	none	nocomplete	speed, no flip (Step 1 only, the page's predict question)	-
+06-crab/wrong-nostart	❌❌	A crab stood still	none	nocomplete	flip, but no starting speed (Step 2 only)	-
+06-crab/wrong-set-2	✅❌	A crab turned around once, then got stuck	none	nocomplete	crab.speedX = 2 instead of the flip	-
+06-crab/wrong-shared	✅❌	A crab turned around in the middle of the floor	none	nocomplete	one variable for every crab	-
+06-crab/wrong-speed-in-update	✅❌	A crab shakes at a wall	none	nocomplete	speed set in updateCrab every frame	-
+06-crab/wrong-xminus	✅❌	Your crab moves by changing crab.x	none	nocomplete	crab.x -= 2	-
+06-crab/zero-minus	✅✅	-	complete	-	0 - crab.speedX	-
+07-bee/starter	❌❌	The bee stays still	none	nocomplete	the page as students get it (a parked bee can be jumped now, so random play may reach the 🚩: the checklist is the gate)	-
+07-bee/solution	✅✅	-	complete	-	answer key; BEEWINDOW measures the spacing targets	-
+07-bee/wrong-noreset	✅❌	After 1 second the bee goes down forever	none	nocomplete	Step 1 only (the predict question)	-
+07-bee/wrong-notimer	❌❌	bee.timer never changes	none	nocomplete	the count line deleted	-
+07-bee/wrong-timer-twice	❌✅	Your timer counts 2 every frame	none	nocomplete	the count line typed twice	-
+07-bee/wrong-reset-no-if	❌❌	starts over before the bee can turn around	none	nocomplete	bee.timer = 0 with no if	-
+07-bee/wrong-reset-early	❌❌	starts over before the bee can turn around	none	nocomplete	reset at 30: the timer never gets to 60	-
+07-bee/wrong-reset-lt	❌❌	starts over before the bee can turn around	none	nocomplete	< 120 in the reset: starts over every frame	-
+07-bee/wrong-noelse	❌❌	The bee only goes up. While bee.timer < 60	none	nocomplete	no else	-
+07-bee/wrong-unequal	✅❌	Make the up speed and the down speed the same size	none	nocomplete	up 3, down 2: drifts up 60 a cycle	-
+07-bee/wrong-gravity	✅❌	drifts away	none	nocomplete	a gravity line at the bottom (speeds 1 and -3)	-
+07-bee/wrong-gravity-only	❌❌	Your bee falls!	none	nocomplete	only a gravity line	-
+07-bee/wrong-y-moves	❌✅	Your bee moves by changing bee.y	none	nocomplete	bee.y += 2 / -= 2 instead of speedY (it does repeat)	-
+07-bee/down-first	❌✅	The bee should go up first	none	-	down, then up	-
+07-bee/count-first	✅✅	-	complete	-	count line above Step 1: 59 frames up, 61 down, drifts 4 a cycle (inside the tolerance)	-
+07-bee/count-last	✅✅	-	complete	-	count line at the bottom	-
+07-bee/reset-greater-equal	✅✅	-	complete	-	reset at >= 120	-
+07-bee/reset-greater	✅✅	-	complete	-	reset at > 120: 60 up, 61 down (2 a cycle)	-
+07-bee/speed-3	✅✅	-	any	-	speed 3: rises 180 (the tunnel roof stops it at 136)	-
+07-bee/slow-2s	✅✅	-	any	-	2 s up, 2 s down at speed 1	-
+07-bee/stretch-slanted	✅✅	-	complete	-	Try it: bee.speedX = 1 / -1 too (a slanted path)	-
+07-bee/alt-startbee-zigzag	✅✅	-	any	-	not in the prose: a student-written startBee is used	-
+07-bee/fallback-label	❌❌	func updateBee(bee: Bee) {	none	-	proof: label bee -> b	-
+07-bee/fallback-v2-deltatime	❌❌	func updateBee(bee: Bee) {	none	-	proof: the v2 first line, with deltaTime: Double	-
+08-ghost/starter	✅❌✅	Do the same with y	none	nocomplete	the page as students get it	-
+08-ghost/solution	✅✅✅	-	complete	-	answer key	-
+08-ghost/fallback-label	❌❌✅	func updateGhost(ghost: Ghost) {	none	-	proof: label ghost -> g	-
+08-ghost/speed-3	✅✅✅	-	complete	-	speed 3	-
+08-ghost/stretch-devil	✅✅✅	-	complete	-	Try it: 😈 / 👻	-
+08-ghost/wrong-copy-sets-speedX	❌❌✅	Your up-and-down half sets ghost.speedX	none	nocomplete	the x half copied for y, still setting ghost.speedX	-
+08-ghost/wrong-fast	✅✅❌	Your ghost moves 6 points a frame	none	nocomplete	speed 6	-
+08-ghost/wrong-flipped	✅❌✅	Do the same with y	none	nocomplete	y half flipped	-
+08-ghost/wrong-speeding	✅✅❌	Your ghost keeps speeding up	none	nocomplete	+= 1 / -= 1	-
+08-ghost/wrong-xy-moves	❌❌✅	Your ghost moves by changing ghost.x. Move it with its speed instead	none	nocomplete	ghost.x += 1 and ghost.y += 1 instead of speeds	-
+08-ghost/wrong-y-moves	✅❌✅	Your ghost moves by changing ghost.y. Move it with its speed instead	none	nocomplete	the y half by ghost.y += 1	-
+08-ghost/y-half-only-up	✅❌✅	Do the same with y	none	-	no else in the y half	-
+09-stomp/starter	❌✅	Landing on the crab hurt you	none	gate	the page as students get it	-
+09-stomp/solution	✅✅	-	complete	-	answer key	-
+09-stomp/bounce-first-then-remove	✅✅	-	complete	-	bounce, then remove	-
+09-stomp/fallback-label	❌✅	always hurts you. Its first line must be exactly func playerTouchedEnemy(enemy: Enemy) {	none	-	proof: label enemy -> e	-
+09-stomp/fallback-type-crab	❌✅	func playerTouchedEnemy(enemy: Enemy) {	none	-	proof: enemy: Crab (a narrower type is another function)	-
+09-stomp/kept-hurt-line	❌✅	You squished it, then got hurt anyway	none	-	if added above the old player.hurt()	-
+09-stomp/le-zero	✅❌	Walking into the crab squished it	none	-	speedY <= 0	-
+09-stomp/no-bounce	✅✅	-	complete	-	no bounce	-
+09-stomp/stretch-boing	✅✅	-	complete	-	Bonus: Boing! and +1	-
+09-stomp/wrong-greater	❌✅	Landing on the crab hurt you	none	nocomplete	speedY > 0	-
+09-stomp/wrong-hurt-then-ifelse	❌✅	The old player.hurt() runs before your if	none	nocomplete	if/else added below the old player.hurt()	-
+09-stomp/wrong-noelse	✅❌	Walking into the crab didn't hurt	none	nocomplete	no else	-
+09-stomp/wrong-noremove	❌✅	The crab is still there	none	nocomplete	no enemy.remove()	-
+09-stomp/y-compare	✅✅	-	complete	-	player.y > enemy.y	-
+e08-deathcounter/starter	❌❌	Your ouches didn't count	none	nocomplete	the page as students get it	-
+e08-deathcounter/solution	✅✅	-	complete	-	answer key	-
+e08-deathcounter/wrong-in-enemy	❌✅	Only walking into an enemy counted	none	nocomplete	the count in playerTouchedEnemy	-
+e08-deathcounter/wrong-equals	❌✅	Your count is stuck at 1	none	nocomplete	= 1 instead of += 1	-
+e08-deathcounter/wrong-twice	❌✅	Every ouch counted 2	none	nocomplete	counted twice	-
+e08-deathcounter/wrong-startplayer	❌✅	game.deaths went up before any ouch	none	nocomplete	the count in startPlayer	-
+e08-deathcounter/wrong-no-show	✅❌	Your text stays the same when game.deaths changes	none	nocomplete	Step 1 only: the ⭐ line shows, but not the deaths	-
+e08-deathcounter/wrong-show-in-event	✅❌	Your text stays the same when game.deaths changes	none	nocomplete	showText in playerGotHurt: one frame per ouch	-
+e08-deathcounter/try-message	✅✅	-	complete	-	Try it: the count in the message	-
+e08-deathcounter/fallback-param	❌✅	only shows "Ouch!". Its first line must be exactly func playerGotHurt() {	none	-	proof: playerGotHurt(player: Player) is another function	-
+e08-deathcounter/try-shake-sound	✅✅	-	complete	-	Try it: the count in the message, a shake and a sound	-
+e09-lives/starter	❌❌❌	game.lives is 0 when the game starts	none	nocomplete	the page as students get it	-
+e09-lives/solution	✅✅✅	-	complete	-	answer key	-
+e09-lives/wrong-startplayer	❌❌✅	Your lives go back to 3 after every ouch	none	nocomplete	the predict question: game.lives = 3 in startPlayer	-
+e09-lives/wrong-in-update	❌❌❌	game.lives goes back to 3 every frame	none	nocomplete	lives set in updateGame	-
+e09-lives/wrong-no-minus	❌❌✅	An ouch didn't take a life	none	nocomplete	no -= 1	-
+e09-lives/wrong-minus-twice	❌❌✅	One ouch took 2 lives	none	nocomplete	-= 1 twice	-
+e09-lives/wrong-no-lose	✅❌✅	The game kept going with no lives left	none	nocomplete	no game.lose()	-
+e09-lives/wrong-lose-early	✅❌✅	Game over came while you still had 1 life	none	nocomplete	lose at 1	-
+e09-lives/wrong-lose-late	✅❌✅	Game over came too late	none	nocomplete	lose below 0	-
+e09-lives/wrong-no-show	✅✅❌	Your text stays the same when game.lives changes	none	nocomplete	Step 3 missing	-
+e09-lives/try-hearts	✅✅✅	-	complete	-	Try it: a row of hearts (a guarded for loop)	-
+e09-lives/try-hard-mode	✅✅✅	-	any	-	Try it: hard mode, 1 life	-
+e09-lives/fallback-label	❌❌✅	func startGame(game: Game) {	none	-	proof: label game -> g (the ❤️ check sets lives itself)	-
+e09-lives/try-score-under-banner	✅✅✅	-	complete	-	Try it: your score under "Game over"	-
+e10-starpower/starter	❌❌✅	Touching the ⭐ didn't start star power	none	nocomplete	the page as students get it (a hop into the tunnel roof can stomp a bee, so the checklist is the gate)	-
+e10-starpower/solution	✅✅✅	-	complete	-	answer key	-
+e10-starpower/steps-1-2	❌✅✅	You got hurt even with star power	none	-	Steps 1 and 2 only: no star branch	-
+e10-starpower/wrong-hurt-first	❌✅✅	because player.hurt() runs first	none	nocomplete	the star if added after the old if / else: the hurt comes first	-
+e10-starpower/alt-star-second	✅✅✅	-	complete	-	the star branch second: walking into an enemy still plows through (only a stomp comes first)	-
+e10-starpower/wrong-no-countdown	✅❌✅	Star power never runs out, because player.timer never changes	none	nocomplete	no count down	-
+e10-starpower/wrong-count-up	✅❌✅	Your star power counts up	none	nocomplete	+= 1 instead of -= 1	-
+e10-starpower/try-speed-boots	✅✅✅	-	complete	-	Try it: speed boots and star sparkles	-
+e10-starpower/fallback-label	❌❌✅	func playerTouchedStar(star: Star) {	none	-	proof: label star -> s	-
+e10-starpower/try-speed-boots-double	✅✅✅	-	complete	-	Try it: speed boots, player.speedX = player.speedX * 2 while the star lasts	-
+e10-starpower/alt-typed-in-front	✅✅✅	-	complete	-	Step 3 typed the way the page says: `if player.timer > 0 { enemy.remove() } else` in front of the `if` that's there	-
+e11-fireballs/starter	❌❌❌❌	Pressing ▼ didn't throw anything	none	nocomplete	the page as students get it (a hop into the tunnel roof can stomp a frog, so the checklist is the gate)	-
+e11-fireballs/solution	✅✅✅✅	-	complete	-	answer key	-
+e11-fireballs/wrong-ispressed	✅✅❌✅	isPressed is true 60 times a second	none	nocomplete	isPressed(.down): a fireball every frame	-
+e11-fireballs/wrong-always-right	✅❌✅✅	Facing left, your 🔥 still flies right	none	nocomplete	always speedX 12	-
+e11-fireballs/wrong-no-fireball-remove	✅✅✅❌	The 🔥 keeps flying after it hits	none	nocomplete	Step 2 without fireball.remove()	-
+e11-fireballs/step1-only	✅✅✅❌	Your 🔥 flew through the crab	none	-	Step 1 only	-
+e11-fireballs/try-bounce-coins	✅✅✅✅	-	complete	-	Try it: bouncing fireballs; knocked-out enemies drop a coin	-
+e11-fireballs/fallback-label	✅✅✅❌	func fireballTouchedEnemy(fireball: Fireball, enemy: Enemy) {	none	-	proof: labels fireball -> f, enemy -> e	-
+e12-level2/starter	❌❌	Make level 2 your own	none	nocomplete	the page as students get it	-
+e12-level2/solution	✅✅	-	complete	-	answer key	-
+e12-level2/wrong-still-wins	✅❌	Touching the 🚩 still wins	none	nocomplete	level 2 changed, but the flag still wins	-
+e12-level2/step2-only	❌✅	change at least 3 letters	none	-	Step 2 only: the map is unchanged	-
+e12-level2/wrong-no-p	❌✅	Put a P in the map	none	nocomplete	level 2 has no P	-
+e12-level2/try-level3	✅✅	-	complete	-	Try it: a level 3, night on level 2, and the level in the corner	-
+e12-level2/fallback-param	✅❌	Touching the 🚩 still wins	none	-	proof: playerTouchedFlag(flag: Thing) is another function: the built-in wins	-
+10-design/starter	-	-	complete	-	the sample map with every script (bot results here are noisy)	-
+10-design/solution	-	-	complete	-	answer key (the hook demo): 🦊 on a sunset with a tree layer, sounds, sparkles, ⭐ 💥 ❤️ ⏱ 🏆 in the corner, 3 lives and game over, double jump, crabs that fall, a bat, a 🍄 and a ⭐, the 🚩 locked until every coin	-
+10-design/broken-crab-line	-	-	any	-	proof: page 10 has no checks, so the panel warns that updateCrab (here the v2 first line) isn't the page's	The engine can't find your updateCrab
+10-design/stretch-bat	-	-	any	-	Ideas: the bat (its look in Settings)	-
+10-design/stretch-crabs-fall	-	-	any	-	Ideas: crabs that fall, and turn at ledges	-
+10-design/stretch-double-jump	-	-	any	-	Ideas: double jump	-
+10-design/stretch-emptymap	-	-	any	-	a broken map: the panel lists the problems, nothing crashes	-
+10-design/stretch-frog-1s	-	-	any	-	Ideas: frogs hop every 60 frames (bot finishes about half as often)	-
+10-design/stretch-jupiter-night	-	-	any	-	Ideas: Jupiter gravity, night sky, new looks	-
+10-design/stretch-lockflag	-	-	any	-	Ideas: lock the flag (bot about 6 in 30 seeds, v1 9 in 30: too noisy to require)	-
+10-design/idea-ui	-	-	any	-	Ideas: death counter, lives and game over, stopwatch, high score (each pasted as the list says)	-
+10-design/idea-lockflag-juice-looks	-	-	any	-	Ideas: locked flag, juice, new looks, a finished look	-
+10-design/idea-sounds-sparkles-backgrounds	-	-	any	-	Ideas: sounds, sparkles and a trail, sunset with a tree layer, snow	-
+10-design/idea-springs-star	-	-	any	-	Ideas: a 🍄 and a ⭐ in the map; springs, and star power typed in front of the stomp if	-
+10-design/idea-star-else-newline	-	-	any	-	Ideas: star power with the else on its own line, above the stomp if (still compiles)	-
+10-design/idea-hero-fireballs	-	-	any	-	Ideas: hero moves, and fireballs copied from Extra: Fireballs	-
+10-design/idea-level2	-	-	any	-	Ideas: a level 2, and the 🚩 goes to the next level	-
+10-design/idea-bat-drops-crabs	-	-	any	-	Ideas: a bat that chases only nearby and drops crabs every 2 s, crabs that fall and turn at ledges	-

@@ -29,12 +29,4 @@ let robot = robotConsole.robot()
 // robot.forward()
 // robot.forward()
 //#-end-hidden-code
-// Level 3: Keys and Doors
-// Pick up the key (a) to open the matching door (A)
-//
-// Available commands:
-//   robot.forward()   - Move one cell forward
-//   robot.turnRight() - Turn 90 degrees right
-//   robot.turnLeft()  - Turn 90 degrees left
-
-// Write your solution here:
+// Write your code here:

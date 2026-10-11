@@ -10,4 +10,4 @@ PlaygroundPage.current.liveView = RobotLiveViewController(level: .ascii("""
 #.#.#
 #*#a#
 #####
-"""))
+"""), par: 22)

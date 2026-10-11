@@ -25,6 +25,7 @@ public struct CodeEnvironmentView<CV: ConsoleView>: View {
                         .padding()
                         .background(Color(uiColor: .secondarySystemBackground))
                         .clipShape(.rect(topLeadingRadius: CORNER_RADIUS, topTrailingRadius: CORNER_RADIUS))
+                        .environment(\.colorScheme, console.tabColorScheme ?? colorScheme)
                 HStack(spacing: 4) {
                     Image(systemName: "minus.magnifyingglass")
                     Slider(value: $console.zoomLevel, in: 0.5...2.0, step: 0.1)

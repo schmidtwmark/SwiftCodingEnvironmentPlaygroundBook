@@ -106,6 +106,10 @@ public enum TurtleCommand: @unchecked Sendable {
     case oval(CGFloat, CGFloat, CGFloat)
     case lineColor(Color)
     case lineWidth(CGFloat)
+    case backgroundColor(Color)
+    case visible(Bool)
+    case goTo(CGFloat, CGFloat)
+    case setHeading(CGFloat)
 }
 
 extension TurtleCommand : ConsoleMessage {
@@ -145,6 +149,19 @@ extension TurtleCommand : ConsoleMessage {
             case "LineWidth":
                 guard case let .floatingPoint(width)? = dict["Width"] else { return nil }
                 self = .lineWidth(width)
+            case "BackgroundColor":
+                guard case let .integer(hex)? = dict["Color"] else { return nil }
+                self = .backgroundColor(Color(hex: hex))
+            case "Visible":
+                guard case let .boolean(visible)? = dict["Visible"] else { return nil }
+                self = .visible(visible)
+            case "GoTo":
+                guard case let .floatingPoint(x)? = dict["X"] else { return nil }
+                guard case let .floatingPoint(y)? = dict["Y"] else { return nil }
+                self = .goTo(x, y)
+            case "SetHeading":
+                guard case let .floatingPoint(angle)? = dict["Angle"] else { return nil }
+                self = .setHeading(angle)
             default: return nil
         }
     }
@@ -172,6 +189,14 @@ extension TurtleCommand : ConsoleMessage {
             return .dictionary(["Command": .string("LineColor"), "Color": .integer(color.hex)])
         case .lineWidth(let width):
             return .dictionary(["Command": .string("LineWidth"), "Width": .floatingPoint(width)])
+        case .backgroundColor(let color):
+            return .dictionary(["Command": .string("BackgroundColor"), "Color": .integer(color.hex)])
+        case .visible(let visible):
+            return .dictionary(["Command": .string("Visible"), "Visible": .boolean(visible)])
+        case .goTo(let x, let y):
+            return .dictionary(["Command": .string("GoTo"), "X": .floatingPoint(x), "Y": .floatingPoint(y)])
+        case .setHeading(let angle):
+            return .dictionary(["Command": .string("SetHeading"), "Angle": .floatingPoint(angle)])
         }
     }
 }
@@ -203,7 +228,7 @@ public class Turtle: SKSpriteNode {
     init(console: TurtleConsole) {
         self.console = console
         let texture = Turtle.texture()
-        super.init(texture: texture, color: .green, size: CGSize(width: 32.0, height: 32.0))
+        super.init(texture: texture, color: .systemBlue, size: CGSize(width: 32.0, height: 32.0))
         self.colorBlendFactor = 1.0
         self.zPosition = 1
     }
@@ -226,6 +251,8 @@ public class Turtle: SKSpriteNode {
         
         await withCheckedContinuation { continuation in
             self.run(action) {
+                // The frame update may run before the move finishes, so add its exact end point.
+                self.update()
                 continuation.resume()
             }
         }
@@ -253,12 +280,21 @@ public class Turtle: SKSpriteNode {
     
         
         
+        let start = self.position
+        let endOffset = path.currentPoint
         self.rotation += angle.radians
         let rotateAction = SKAction.rotate(byAngle: angle.radians, duration: duration)
         let followAction = SKAction.follow(path, asOffset: true , orientToPath: false, duration: duration)
         let group = SKAction.group([rotateAction, followAction])
-        
+
         await self.runAsync(group)
+        // SpriteKit's follow action can stop short of the end of the path, by more at higher speeds (fewer
+        // frames per arc). Over many arcs that drift bent drawings, so land exactly on the end.
+        if console.state == .running {
+            self.position = CGPoint(x: start.x + endOffset.x, y: start.y + endOffset.y)
+            self.zRotation = self.rotation
+            self.update()
+        }
             
     }
 
@@ -326,10 +362,28 @@ public class Turtle: SKSpriteNode {
         await self.runAsync(SKAction.sequence(actions))
     }
 
+    // Move in a straight line to a point, keeping the same heading. (0, 0) is where the turtle started.
+    public func goTo(_ point: CGPoint) async {
+        let distance = hypot(point.x - position.x, point.y - position.y)
+        await self.runAsync(SKAction.move(to: point, duration: distance / MOVEMENT_SPEED_0))
+    }
+
+    // Turn to face a direction, the short way around: 0 is right, 90 is up, 180 is left, 270 is down.
+    public func setHeading(_ angle: CGFloat) async {
+        var delta = (angle.radians - rotation).truncatingRemainder(dividingBy: 2 * .pi)
+        if delta > .pi { delta -= 2 * .pi }
+        if delta < -.pi { delta += 2 * .pi }
+        await rotate(delta * 180 / .pi)
+    }
+
    public func rotate(_ angle: CGFloat) async {
        self.rotation += angle.radians
        let rotateAction = SKAction.rotate(byAngle: angle.radians, duration: abs(angle / ROTATION_SPEED_0))
        await self.runAsync(rotateAction)
+       // Keep the arrow pointing exactly along the heading the next move will use.
+       if console.state == .running {
+           self.zRotation = self.rotation
+       }
     }
     
     public func setColor(_ color: UIColor) async {
@@ -354,7 +408,7 @@ public class Turtle: SKSpriteNode {
     
     
     func update() {
-        if case .down(let path, let pathNode, _) = penState {
+        if case .down(let path, let pathNode, _) = penState, path.currentPoint != self.position {
             path.addLine(to: self.position)
             pathNode.path = path
         }
@@ -389,11 +443,19 @@ public class Turtle: SKSpriteNode {
             await setColor(UIColor(color))
         case .lineWidth(let width):
             lineWidth(width)
+        case .backgroundColor(let color):
+            console.setBackground(UIColor(color))
+        case .visible(let visible):
+            isHidden = !visible
+        case .goTo(let x, let y):
+            await goTo(CGPoint(x: x, y: y))
+        case .setHeading(let angle):
+            await setHeading(angle)
         }
     }
 }
 
-let ROTATION_SPEED_0 = 90.0 // degrees / second
+let ROTATION_SPEED_0 = 360.0 // degrees / second
 let MOVEMENT_SPEED_0 = 200.0 // points / second
 
 class TurtleScene: SKScene {
@@ -474,8 +536,10 @@ class TurtleScene: SKScene {
     func clampCameraPosition() {
         guard let cameraNode = self.cameraNode else { return }
         
-        let xRange = SKRange(lowerLimit: -self.size.width, upperLimit: self.size.width)
-        let yRange = SKRange(lowerLimit: -self.size.height, upperLimit: self.size.height)
+        // .resizeFill makes the scene the size of the view, so its size can't be the limit.
+        let limit: CGFloat = 2500
+        let xRange = SKRange(lowerLimit: -limit, upperLimit: limit)
+        let yRange = SKRange(lowerLimit: -limit, upperLimit: limit)
         
         cameraNode.position.x = max(min(cameraNode.position.x, xRange.upperLimit), xRange.lowerLimit)
         cameraNode.position.y = max(min(cameraNode.position.y, yRange.upperLimit), yRange.lowerLimit)
@@ -549,8 +613,34 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console, @unchecke
     }
     
     
+    // The canvas stays the same light gray in light and dark mode, so drawings (and the pictures on the
+    // tutorial pages) look the same on every iPad. turtle.backgroundColor(_:) changes it until the next run.
+    static let defaultBackground = UIColor(red: 0xF2 / 255.0, green: 0xF2 / 255.0, blue: 0xF7 / 255.0, alpha: 1)
+    private var customBackground: UIColor? = nil
+
     func updateBackground(_ colorScheme: ColorScheme) {
-        scene.backgroundColor = .secondarySystemBackground 
+        scene.backgroundColor = customBackground ?? Self.defaultBackground
+    }
+
+    func setBackground(_ color: UIColor) {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        color.getRed(&r, green: &g, blue: &b, alpha: &a)
+        guard a > 0 else {
+            // .clear means the normal canvas
+            customBackground = nil
+            scene.backgroundColor = Self.defaultBackground
+            return
+        }
+        var dr: CGFloat = 0, dg: CGFloat = 0, db: CGFloat = 0, da: CGFloat = 0
+        Self.defaultBackground.getRed(&dr, green: &dg, blue: &db, alpha: &da)
+        let blended = UIColor(red: r * a + dr * (1 - a), green: g * a + dg * (1 - a), blue: b * a + db * (1 - a), alpha: 1)
+        customBackground = blended
+        scene.backgroundColor = blended
+    }
+
+    // The zoom slider: a bigger zoom shows the drawing bigger.
+    func applyZoom() {
+        scene.cameraNode?.setScale(1 / zoomLevel)
     }
     
     public init(colorScheme: ColorScheme) {
@@ -572,10 +662,15 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console, @unchecke
         super.clear()
         scene.removeAllChildren()
         scene.setupCamera()
+        scene.lockCamera()
+        applyZoom()
+        customBackground = nil
+        scene.backgroundColor = Self.defaultBackground
     }
     
+    // Clearing mid-run would remove a moving turtle whose move never finishes, so the run would hang.
     public var disableClear: Bool {
-        false
+        state == .running
     }
     
     func addTurtle() {
@@ -588,5 +683,8 @@ public final class TurtleConsole: BaseConsole<TurtleConsole>, Console, @unchecke
     }
     
     public var title: String { "Turtle" }
+
+    // The canvas is always light, so draw the "Turtle" tab above it in light mode too.
+    public var tabColorScheme: ColorScheme? { .light }
     
 }

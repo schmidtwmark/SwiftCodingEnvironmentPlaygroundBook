@@ -35,15 +35,20 @@ public struct RobotConsoleView: ConsoleView {
             backgroundColor.ignoresSafeArea()
 
             if let level = console.level, let robotState = console.robotState {
-                GridView(
-                    level: level,
-                    robotState: robotState,
-                    gameState: console.gameState,
-                    levelState: console.levelState,
-                    moveCount: console.moveCount
-                )
-                .scaleEffect(console.zoomLevel)
-                .animation(.easeInOut(duration: 0.2), value: console.zoomLevel)
+                // Size the squares so the whole map fits the live view, however big the level is.
+                GeometryReader { geometry in
+                    GridView(
+                        level: level,
+                        robotState: robotState,
+                        gameState: console.gameState,
+                        levelState: console.levelState,
+                        moveCount: console.moveCount,
+                        fittedCellSize: GridView.cellSize(for: level, fitting: geometry.size)
+                    )
+                    .scaleEffect(console.zoomLevel)
+                    .animation(.easeInOut(duration: 0.2), value: console.zoomLevel)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                }
             } else {
                 VStack(spacing: 16) {
                     Image(systemName: "square.grid.3x3")
@@ -70,14 +75,26 @@ struct GridView: View {
     let gameState: GameState
     let levelState: LevelState
     var moveCount: Int = 0
+    /// Square size chosen by the live view so the map fits. Previews without it use a fixed size.
+    var fittedCellSize: CGFloat? = nil
 
     private var cellSize: CGFloat {
+        if let fitted = fittedCellSize { return fitted }
         let maxDim = max(level.rows, level.columns)
         if maxDim <= 7 { return 50 }
         if maxDim <= 9 { return 44 }
         if maxDim <= 11 { return 38 }
         if maxDim <= 13 { return 32 }
         return 28
+    }
+
+    /// The largest square size (up to 50 points) that fits the whole map in `size`, leaving a margin.
+    static func cellSize(for level: Level, fitting size: CGSize) -> CGFloat {
+        let margin: CGFloat = 24
+        let columns = CGFloat(max(level.columns, 1))
+        let rows = CGFloat(max(level.rows, 1))
+        let fit = min((size.width - margin) / columns, (size.height - margin) / rows)
+        return max(8, min(50, fit.rounded(.down)))
     }
 
     var body: some View {
@@ -359,8 +376,14 @@ struct WinBanner: View {
     let par: Int?
 
     private var isPerfect: Bool {
-        guard let par = par else { return true }
+        guard let par = par else { return false }
         return moveCount <= par
+    }
+
+    /// Orange only means "you won, but in more moves than par". A level with no par is plain green.
+    private var missedPar: Bool {
+        guard let par = par else { return false }
+        return moveCount > par
     }
 
     var body: some View {
@@ -387,7 +410,7 @@ struct WinBanner: View {
         }
         .padding(.horizontal, 28)
         .padding(.vertical, 14)
-        .background(RoundedRectangle(cornerRadius: 16).fill(isPerfect ? Color.green : Color.orange).shadow(color: .black.opacity(0.3), radius: 8))
+        .background(RoundedRectangle(cornerRadius: 16).fill(missedPar ? Color.orange : Color.green).shadow(color: .black.opacity(0.3), radius: 8))
     }
 }
 

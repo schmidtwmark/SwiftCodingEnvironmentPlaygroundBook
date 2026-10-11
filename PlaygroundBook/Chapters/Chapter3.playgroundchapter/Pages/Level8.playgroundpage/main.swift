@@ -51,7 +51,7 @@ let robot = robotConsole.robot()
 // robot.forward()
 // robot.forward()
 // // Go through door A and to teleporter
-// robot.turnRight()
+// robot.turnLeft()
 // robot.forward()
 // robot.forward()
 // robot.turnLeft()
@@ -65,13 +65,4 @@ let robot = robotConsole.robot()
 // robot.forward()
 // robot.forward()
 //#-end-hidden-code
-// Level 8: The Gauntlet
-// Keys, doors, lasers, enemies, and teleporters!
-//
-// Available commands:
-//   robot.forward()   - Move one cell forward
-//   robot.turnRight() - Turn 90 degrees right
-//   robot.turnLeft()  - Turn 90 degrees left
-//   robot.wait()      - Wait one turn
-
-// Write your solution here:
+// Write your code here:

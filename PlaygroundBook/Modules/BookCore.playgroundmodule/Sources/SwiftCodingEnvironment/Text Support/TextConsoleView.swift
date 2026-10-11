@@ -33,6 +33,10 @@ public struct TextConsoleView: ConsoleView {
                                 .fixedSize(horizontal: false, vertical: true)
                         case .input:
                             TextField("", text: $console.userInput)
+                                // Give students back exactly what they typed, so
+                                // `answer == "left"` works without capitalization surprises.
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
                                 .onSubmit {
                                     console.submitInput(true)
                                 }

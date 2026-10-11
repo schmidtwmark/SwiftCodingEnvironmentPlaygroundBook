@@ -55,7 +55,11 @@ public struct TurtleConsoleView: ConsoleView {
             }
             .onChange(of: colorScheme, {
                 console.updateBackground(colorScheme)
-            }).overlay(alignment: .bottomTrailing) {
+            })
+            .onChange(of: console.zoomLevel) {
+                console.applyZoom()
+            }
+            .overlay(alignment: .bottomTrailing) {
                 if speedButtonOpen {
                     HStack(spacing: 10) {
                         ForEach(Speed.allCases) { speed in
@@ -71,7 +75,7 @@ public struct TurtleConsoleView: ConsoleView {
                                     .background(
                                         sceneSpeed == speed
                                         ? Color.blue
-                                        : Color.gray.opacity(0.2)
+                                        : Color.white.opacity(0.85)
                                     )
                                     .foregroundColor(sceneSpeed == speed ? .white : .primary)
                                     .clipShape(Capsule())
@@ -79,7 +83,7 @@ public struct TurtleConsoleView: ConsoleView {
                         }
                     }
                     .padding()
-                    .background(Capsule().fill(Color.gray.opacity(0.1)))
+                    .background(Capsule().fill(.regularMaterial))
                     .overlay(
                         Capsule()
                             .stroke(Color.gray.opacity(0.3), lineWidth: 1)
@@ -104,9 +108,9 @@ public struct TurtleConsoleView: ConsoleView {
                             .font(.title2)
                             .padding(12)
                             .background(
-                                Color.gray.opacity(0.2)
+                                Color.white.opacity(0.85)
                             )
-                            .foregroundColor(.white)
+                            .foregroundColor(.primary)
                             .clipShape(Capsule())
 
                     }
@@ -115,5 +119,7 @@ public struct TurtleConsoleView: ConsoleView {
                     .animation(.easeInOut(duration: 0.5), value: console.scene.showCameraLock)
                     
             }
+            // The canvas is always light gray, so draw the buttons on it in light mode too.
+            .environment(\.colorScheme, .light)
     }
 }

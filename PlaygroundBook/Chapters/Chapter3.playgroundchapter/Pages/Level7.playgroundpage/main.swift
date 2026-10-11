@@ -11,13 +11,13 @@ let robot = robotConsole.robot()
 // robot.turnRight()
 // robot.forward()
 // robot.forward()
-// // Wait for laser 5 (ON 4, OFF 2)
-// robot.wait()
-// robot.wait()
-// robot.wait()
+// // Step one square west instead of waiting: the robot reaches laser row 5 just as it turns off
+// robot.turnRight()
+// robot.forward()
+// robot.turnLeft()
 // robot.forward()
 // robot.forward()
-// // Wait for laser 2 (ON 3, OFF 2)
+// // Wait one turn for laser 2 (ON 3, OFF 2)
 // robot.wait()
 // robot.forward()
 // robot.forward()
@@ -26,15 +26,5 @@ let robot = robotConsole.robot()
 // robot.forward()
 // robot.forward()
 // robot.forward()
-// robot.forward()
 //#-end-hidden-code
-// Level 7: Multiple Laser Timings
-// Two rows of lasers with different timing patterns
-//
-// Available commands:
-//   robot.forward()   - Move one cell forward
-//   robot.turnRight() - Turn 90 degrees right
-//   robot.turnLeft()  - Turn 90 degrees left
-//   robot.wait()      - Wait one turn
-
-// Write your solution here:
+// Write your code here:

@@ -52,7 +52,13 @@ public class LiveViewController<CV: ConsoleView>: UIHostingController<CodeEnviro
 /// Convenience class for Robot levels that pre-loads a level
 public class RobotLiveViewController: LiveViewController<RobotConsoleView> {
 
-    public init(level: Level) {
+    /// - Parameter par: the fewest moves that solve the level. A win at or under par
+    ///   shows "Perfect!"; without a par the banner just says "You Win!".
+    public init(level: Level, par: Int? = nil) {
+        var level = level
+        if let par = par {
+            level.minimumMoves = par
+        }
         // Set pending level before super.init() creates the console
         RobotConsole.pendingLevel = level
         super.init()

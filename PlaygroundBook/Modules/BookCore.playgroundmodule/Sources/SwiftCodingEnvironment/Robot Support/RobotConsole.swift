@@ -26,6 +26,26 @@ extension RobotAction: ConsoleMessage {
     public var playgroundValue: PlaygroundValue { .string(rawValue) }
 }
 
+// MARK: - Sensor Queries
+
+/// Questions the student's code can ask about the robot. Asking never uses up a move,
+/// so enemies and lasers do not advance while the robot "looks".
+public enum RobotQuery: String, Codable, Sendable {
+    case facingWall
+    case isOnGoal
+    case laserAhead
+
+    /// The answer to use when there is no level or no reply: the one that makes a waiting
+    /// loop (`while !robot.facingWall()`, `while !robot.isOnGoal()`, `while robot.laserAhead()`)
+    /// stop instead of spinning.
+    var stopLoopsAnswer: Bool {
+        switch self {
+        case .facingWall, .isOnGoal: return true
+        case .laserAhead: return false
+        }
+    }
+}
+
 // MARK: - Commands
 
 public enum RobotSceneCommand: Sendable {
@@ -33,6 +53,7 @@ public enum RobotSceneCommand: Sendable {
     case getRobot
     case robotAction(RobotAction)
     case reset
+    case query(RobotQuery)
 }
 
 extension RobotSceneCommand: ConsoleMessage {
@@ -48,6 +69,9 @@ extension RobotSceneCommand: ConsoleMessage {
             guard let av = dict["Action"], let action = RobotAction(av) else { return nil }
             self = .robotAction(action)
         case "Reset": self = .reset
+        case "Query":
+            guard case let .string(q)? = dict["Query"], let query = RobotQuery(rawValue: q) else { return nil }
+            self = .query(query)
         default: return nil
         }
     }
@@ -62,6 +86,8 @@ extension RobotSceneCommand: ConsoleMessage {
             return .dictionary(["Command": .string("RobotAction"), "Action": action.playgroundValue])
         case .reset:
             return .dictionary(["Command": .string("Reset")])
+        case .query(let query):
+            return .dictionary(["Command": .string("Query"), "Query": .string(query.rawValue)])
         }
     }
 }
@@ -74,6 +100,7 @@ public enum RobotSceneResponse: Sendable {
     case actionCompleted(RobotAction)
     case actionFailed(RobotAction, LossReason)
     case won
+    case queryResult(Bool)
 }
 
 extension RobotSceneResponse: ConsoleMessage {
@@ -91,6 +118,9 @@ extension RobotSceneResponse: ConsoleMessage {
                   let rv = dict["Reason"], let r = LossReason(rv) else { return nil }
             self = .actionFailed(a, r)
         case "Won": self = .won
+        case "QueryResult":
+            guard case let .boolean(value)? = dict["Value"] else { return nil }
+            self = .queryResult(value)
         default: return nil
         }
     }
@@ -104,6 +134,8 @@ extension RobotSceneResponse: ConsoleMessage {
         case .actionFailed(let a, let r):
             return .dictionary(["Command": .string("ActionFailed"), "Action": a.playgroundValue, "Reason": r.playgroundValue])
         case .won: return .dictionary(["Command": .string("Won")])
+        case .queryResult(let value):
+            return .dictionary(["Command": .string("QueryResult"), "Value": .boolean(value)])
         }
     }
 }
@@ -126,7 +158,9 @@ public final class RobotConsole: BaseConsole<RobotConsole>, Console, @unchecked 
     private let animationDuration: Double = 0.3
 
     public var title: String { "Robot" }
-    public var disableClear: Bool { false }
+    // No Clear while code is running: clearing mid-run would reset the board under a loop
+    // that is still going. Students use Swift Playgrounds' Stop button instead.
+    public var disableClear: Bool { state == .running }
 
     public init(colorScheme: ColorScheme) {
         super.init()
@@ -163,6 +197,56 @@ public final class RobotConsole: BaseConsole<RobotConsole>, Console, @unchecked 
         case .getRobot: messageHandler?.send(RobotSceneResponse.robotReady.playgroundValue)
         case .robotAction(let action): Task { await performAction(action) }
         case .reset: resetLevel()
+        case .query(let query):
+            // Answered right away: looking does not move the robot or advance the tick.
+            messageHandler?.send(RobotSceneResponse.queryResult(answer(query)).playgroundValue)
+        }
+    }
+
+    // MARK: - Sensors
+
+    private func answer(_ query: RobotQuery) -> Bool {
+        guard let level = level, let robot = robotState else {
+            return query.stopLoopsAnswer
+        }
+        let ahead = robot.position.moved(in: robot.direction)
+        switch query {
+        case .facingWall:
+            // Walls and the edge of the map count. Doors, lasers and enemies do not.
+            return !level.isInBounds(ahead) || level.cells[ahead.row][ahead.column] == .wall
+        case .isOnGoal:
+            return robot.position == level.goalPosition
+        case .laserAhead:
+            // True when stepping forward now would hit a laser. performAction checks the square
+            // ahead at the current tick before moving, then checks again after the tick advances,
+            // so a laser that is on now or turns on next tick both count.
+            guard level.isInBounds(ahead) else { return false }
+            return isLaserActive(at: ahead, in: level, tick: levelState.tick)
+                || isLaserActive(at: ahead, in: level, tick: levelState.tick + 1)
+        }
+    }
+
+    // MARK: - Run Result
+
+    /// The page's code ended (it finished, crashed, or was stopped). Show how the level
+    /// actually went in the status bar instead of a blanket "Success".
+    public override func finish(_ newState: RunState) {
+        guard newState == .success else {
+            super.finish(newState)
+            return
+        }
+        guard level != nil else {
+            // e.g. a Custom Level map with no start or no flag stops the code before it loads
+            super.finish(.failed("No level was loaded"))
+            return
+        }
+        switch gameState {
+        case .won:
+            super.finish(.success)
+        case .lost(let reason):
+            super.finish(.failed(reason.rawValue))
+        case .playing:
+            super.finish(.failed("The robot didn't reach the flag"))
         }
     }
 
@@ -193,8 +277,13 @@ public final class RobotConsole: BaseConsole<RobotConsole>, Console, @unchecked 
     // MARK: - Actions
 
     private func performAction(_ action: RobotAction) async {
-        guard state == .running, gameState == .playing else { return }
-        guard var currentState = robotState, let level = level else { return }
+        guard state == .running, gameState == .playing,
+              var currentState = robotState, let level = level else {
+            // The student's code waits for a reply to every command, so always send one.
+            // Without this, any command after a win or loss left the page "Running" forever.
+            replyWithoutActing(action)
+            return
+        }
         moveCount += 1
 
         switch action {
@@ -249,6 +338,19 @@ public final class RobotConsole: BaseConsole<RobotConsole>, Console, @unchecked 
         }
 
         messageHandler?.send(RobotSceneResponse.actionCompleted(action).playgroundValue)
+    }
+
+    /// Answer a command the robot will not perform (the level is already won or lost,
+    /// or the console is not running) so the waiting student code can keep going.
+    private func replyWithoutActing(_ action: RobotAction) {
+        switch gameState {
+        case .won:
+            messageHandler?.send(RobotSceneResponse.won.playgroundValue)
+        case .lost(let reason):
+            messageHandler?.send(RobotSceneResponse.actionFailed(action, reason).playgroundValue)
+        case .playing:
+            messageHandler?.send(RobotSceneResponse.actionCompleted(action).playgroundValue)
+        }
     }
 
     private func fail(_ action: RobotAction, _ reason: LossReason) {

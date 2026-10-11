@@ -87,6 +87,13 @@ public protocol Console : ObservableObject {
     var disableClear: Bool { get }
 
     var zoomLevel: CGFloat { get set }
+
+    /// The color scheme for the title tab above the console, or nil to follow the system.
+    var tabColorScheme: ColorScheme? { get }
+}
+
+public extension Console {
+    var tabColorScheme: ColorScheme? { nil }
 }
 
 struct ConsoleError: Error {

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Name</key>
+	<string>Bug Hunt</string>
+	<key>Pages</key>
+	<array>
+		<string>Learn.playgroundpage</string>
+		<string>Bug01.playgroundpage</string>
+		<string>Bug02.playgroundpage</string>
+		<string>Bug03.playgroundpage</string>
+		<string>Bug04.playgroundpage</string>
+		<string>Bug05.playgroundpage</string>
+		<string>Bug06.playgroundpage</string>
+		<string>Bug07.playgroundpage</string>
+		<string>Bug08.playgroundpage</string>
+		<string>Bug09.playgroundpage</string>
+		<string>Bug10.playgroundpage</string>
+		<string>Bug11.playgroundpage</string>
+		<string>Bug12.playgroundpage</string>
+		<string>Bug13.playgroundpage</string>
+		<string>Bug14.playgroundpage</string>
+		<string>Bug15.playgroundpage</string>
+		<string>Bug16.playgroundpage</string>
+		<string>Bug17.playgroundpage</string>
+		<string>Bug18.playgroundpage</string>
+		<string>Bug19.playgroundpage</string>
+		<string>Bug20.playgroundpage</string>
+		<string>Bug21.playgroundpage</string>
+		<string>Bug22.playgroundpage</string>
+		<string>Bug23.playgroundpage</string>
+		<string>Bug24.playgroundpage</string>
+		<string>Bug25.playgroundpage</string>
+		<string>Bug26.playgroundpage</string>
+		<string>Bug27.playgroundpage</string>
+		<string>Bug28.playgroundpage</string>
+		<string>Bug29.playgroundpage</string>
+		<string>Bug30.playgroundpage</string>
+		<string>Hints.playgroundpage</string>
+	</array>
+</dict>
+</plist>

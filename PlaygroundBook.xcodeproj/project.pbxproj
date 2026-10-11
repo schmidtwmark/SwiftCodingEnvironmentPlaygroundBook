@@ -610,6 +610,7 @@
 			buildPhases = (
 				5E086DD22051E35D004D8D25 /* Copy Book Contents */,
 				5E086DC62051DB17004D8D25 /* Resources */,
+				FACE00222F40000100000001 /* Remove Answers */,
 			);
 			buildRules = (
 				5E086DD42051E415004D8D25 /* PBXBuildRule */,
@@ -684,6 +685,7 @@
 			buildPhases = (
 				ED9B7DAA2F3155EA004DD684 /* Copy Book Contents */,
 				ED9B7DAE2F3155EA004DD684 /* Resources */,
+				FACE00212F40000100000001 /* Make Answer Key */,
 			);
 			buildRules = (
 				ED9B7DB42F3155EA004DD684 /* PBXBuildRule */,
@@ -736,6 +738,7 @@
 			buildPhases = (
 				EDCF3C852D32ABDF00A47A24 /* Copy Book Contents */,
 				EDCF3C892D32ABDF00A47A24 /* Resources */,
+				FACE00232F40000100000001 /* Make Answer Key */,
 			);
 			buildRules = (
 				EDCF3C8D2D32ABDF00A47A24 /* PBXBuildRule */,
@@ -881,6 +884,51 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "\"${PROJECT_DIR}/inject_solutions.sh\"\n";
+		};
+		FACE00212F40000100000001 /* Make Answer Key */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Make Answer Key";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "\"${PROJECT_DIR}/inject_solutions.sh\"\n";
+		};
+		FACE00222F40000100000001 /* Remove Answers */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Remove Answers";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "\"${PROJECT_DIR}/inject_solutions.sh\" --strip-only\n";
+		};
+		FACE00232F40000100000001 /* Make Answer Key */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Make Answer Key";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "\"${PROJECT_DIR}/inject_solutions.sh\" --answer-key \"Turtle Answer Key\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1033,6 +1081,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5E086DC72051DD03004D8D25 /* BookOverridingBuildSettings.xcconfig */;
 			buildSettings = {
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(PLAYGROUND_BOOK_CONTENT_VERSION)";
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1056,6 +1105,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5E086DC72051DD03004D8D25 /* BookOverridingBuildSettings.xcconfig */;
 			buildSettings = {
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(PLAYGROUND_BOOK_CONTENT_VERSION)";
 				INFOPLIST_KEY_CFBundleDisplayName = "Text Playground";
@@ -1293,14 +1343,15 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_KEY_CFBundleDisplayName = "Robot Playground";
 				INSTALL_PATH = /;
-				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.turtle;
-				PLAYGROUND_BOOK_FILE_NAME = "Turtle Console";
+				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.robot;
+				PLAYGROUND_BOOK_FILE_NAME = "Robot Console";
 				PLAYGROUND_ICON = turtleicon.png;
-				PLAYGROUND_NAME = "Turtle Coding Environment";
+				PLAYGROUND_NAME = "Robot Coding Environment";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = io.markschmidt.playgroundbooks.robot;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = io.markschmidt.playgroundbooks.robot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PLAYGROUND_BOOK_EXTRA_CHAPTERS = "Chapter4.playgroundchapter Chapter5.playgroundchapter Chapter6.playgroundchapter Chapter7.playgroundchapter";
 				SELECTED_API = RobotAPI;
 				SELECTED_CHAPTER = Chapter3.playgroundchapter;
 				SKIP_INSTALL = NO;
@@ -1318,14 +1369,15 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_KEY_CFBundleDisplayName = "Robot Playground";
 				INSTALL_PATH = /;
-				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.turtle;
-				PLAYGROUND_BOOK_FILE_NAME = "Turtle Console";
+				PLAYGROUND_BOOK_CONTENT_IDENTIFIER = io.markschmidt.playgroundbooks.robot;
+				PLAYGROUND_BOOK_FILE_NAME = "Robot Console";
 				PLAYGROUND_ICON = turtleicon.png;
-				PLAYGROUND_NAME = "Turtle Coding Environment";
+				PLAYGROUND_NAME = "Robot Coding Environment";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PLAYGROUND_BOOK_CONTENT_IDENTIFIER)";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = io.markschmidt.playgroundbooks.robot;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = io.markschmidt.playgroundbooks.robot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PLAYGROUND_BOOK_EXTRA_CHAPTERS = "Chapter4.playgroundchapter Chapter5.playgroundchapter Chapter6.playgroundchapter Chapter7.playgroundchapter";
 				SELECTED_API = RobotAPI;
 				SELECTED_CHAPTER = Chapter3.playgroundchapter;
 				SKIP_INSTALL = NO;

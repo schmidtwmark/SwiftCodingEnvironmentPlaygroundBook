@@ -67,14 +67,10 @@ extension Color {
     }
 
     /// Initialize from 0-255 RGB byte components, with optional 0-255 alpha.
+    /// Values below 0 count as 0 and values above 255 count as 255, so color math in a loop can't wrap around.
     public init(red: Int, green: Int, blue: Int, alpha: Int = 255) {
-        self.init(
-            .sRGB,
-            red: Double(red) / 255,
-            green: Double(green) / 255,
-            blue: Double(blue) / 255,
-            opacity: Double(alpha) / 255
-        )
+        func byte(_ value: Int) -> Double { Double(min(max(value, 0), 255)) / 255 }
+        self.init(.sRGB, red: byte(red), green: byte(green), blue: byte(blue), opacity: byte(alpha))
     }
 
     var hex: Int {
@@ -94,11 +90,13 @@ extension Color {
         
         uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         
-        // Convert to hex
-        let r = Int(red * 255) << 24
-        let g = Int(green * 255) << 16
-        let b = Int(blue * 255) << 8
-        let a = Int(alpha * 255)
+        // Convert to hex. Clamp first: extended-range colors can have components outside 0...1,
+        // which would spill into the neighboring byte.
+        func byte(_ component: CGFloat) -> Int { Int((min(max(component, 0), 1) * 255).rounded()) }
+        let r = byte(red) << 24
+        let g = byte(green) << 16
+        let b = byte(blue) << 8
+        let a = byte(alpha)
         
         return r | g | b | a
     }

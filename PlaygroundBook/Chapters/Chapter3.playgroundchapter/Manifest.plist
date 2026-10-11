@@ -3,9 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>Name</key>
-	<string>Robot</string>
+	<string>Robot Basics</string>
 	<key>Pages</key>
 	<array>
+		<string>Learn.playgroundpage</string>
 		<string>Level1.playgroundpage</string>
 		<string>Level2.playgroundpage</string>
 		<string>Level3.playgroundpage</string>
