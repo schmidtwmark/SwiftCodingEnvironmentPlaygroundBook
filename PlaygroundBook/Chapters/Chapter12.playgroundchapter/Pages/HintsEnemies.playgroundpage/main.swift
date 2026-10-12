@@ -41,7 +41,7 @@
  **Try it:** make the bees fly a slanted path: a little to the right while they go up, and a little to the left while they go down. Predict the path first!
 
  ## 11. Ghost Chase
- **Hint 1:** Copy the idea of the left-and-right half. It compares the `x`s and sets `ghost.speedX`. Yours compares the `y`s and sets `ghost.speedY`.
+ **Hint 1:** The goal: the ghost chases your position. Every frame, it moves toward where you are, so it catches you if you stand still. The left-and-right half already moves it toward your `x`: it compares the `x`s and sets `ghost.speedX`. Yours moves it toward your `y` the same way: compare the `y`s and set `ghost.speedY`.
 
  **Hint 2:** At the 👉 comment, an if / else that asks whether `player.y` is more than `ghost.y`: you're higher than the ghost.
 

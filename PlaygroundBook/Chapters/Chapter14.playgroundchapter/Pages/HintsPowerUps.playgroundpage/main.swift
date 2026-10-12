@@ -46,7 +46,7 @@
  - Sparkles when you grab it: `star.burst("✨")`.
 
  ## 17. Fireballs
- **Hint 1:** Two questions: is ▼ **just** pressed? Then: which way do you face? Each way spawns a 🔥 with its own `speedX`.
+ **Hint 1:** Two questions: is ▼ **just** pressed? That's `justPressed(.down)`, not `isPressed`, so one press throws one 🔥. Then: which way do you face? Each way spawns a 🔥 with its own `speedX`.
 
  **Hint 2:** At the 👉 comment at the end of `updatePlayer`, an `if` that asks `justPressed(.down)`, with an if / else inside that asks `player.facingRight()`. In `fireballTouchedEnemy`, call `remove()` on the `enemy`, and on the `fireball`.
 

@@ -136,10 +136,12 @@ _startGamePage()
 //#-end-hidden-code
 /*:
  # 11. Ghost Chase
- A function can look at other things: in `updateGhost`, `player` is still you. The left-and-right half of the chase is done: when you're to the right of the ghost, it moves right.
+ The 👻 chases you: every frame, it moves toward where you are (your `x` and `y`), so it catches you if you stand still.
+
+ In `updateGhost`, `player` is still you. The left-and-right half is done: when `player.x` is bigger, the ghost moves right; otherwise, left.
 
  ## Your turn
- - Write the up-and-down half: the same idea, with `y`. Bigger `y` is higher.
+ - Write the up-and-down half the same way, with `y` (bigger `y` is higher), so the ghost also moves toward your height.
  - Outrun the ghost to the 🚩. Ghosts float through blocks!
 
  **Your tools:** `player.y`, `ghost.y`, `ghost.speedY`, if / else.

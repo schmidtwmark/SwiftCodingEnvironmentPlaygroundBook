@@ -161,7 +161,7 @@ _startGamePage()
 //#-end-hidden-code
 /*:
  # 14. Backgrounds
- **You can skip this page:** nothing later needs it. Far things scroll slower, so a background is layers at different distances. This page is all **Settings**: lines in ⚙️ SETTINGS that run once, before the game starts.
+ Far things scroll slower, so a background is layers at different distances. This page is all **Settings**: lines in ⚙️ SETTINGS that run once, before the game starts.
 
  ## Your turn
  - Make the sky fade to a warm color at the bottom.

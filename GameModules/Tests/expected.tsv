@@ -216,9 +216,10 @@
 16-starpower/steps-1-2	❌✅✅✅	You got hurt even with star power.	none	-	Steps 1 and 2 only: no star branch	-
 16-starpower/try-speed-boots	✅✅✅✅	-	complete	-	Try it: speed boots and star sparkles	-
 16-starpower/try-speed-boots-double	✅✅✅✅	-	complete	-	Try it: speed boots, player.speedX = player.speedX * 2 while the star lasts	-
-16-starpower/wrong-count-up	✅❌✅✅	Your star power counts up, so it never runs out.	none	nocomplete	+= 1 instead of -= 1	-
+16-starpower/wrong-count-up	✅✅✅❌	Your star power counts up, so it never runs out.	none	nocomplete	+= 1 instead of -= 1	-
 16-starpower/wrong-hurt-first	❌✅✅✅	You got hurt even with star power.	none	nocomplete	the star if added after the old if / else: the hurt comes first	-
-16-starpower/wrong-no-countdown	✅❌✅✅	Star power never runs out, because player.timer never changes.	none	nocomplete	no count down	-
+16-starpower/wrong-no-countdown	✅✅✅❌	Star power never runs out, because player.timer never changes.	none	nocomplete	no count down	-
+16-starpower/wrong-star-not-removed	✅❌✅✅	The ⭐ is still there after you touched it	none	nocomplete	no star.remove(): star power works, but the ⭐ stays in the game	-
 17-fireballs/fallback-label	✅✅✅❌	The engine can't find your fireballTouchedEnemy, so it uses the built-in one, which does n	none	-	proof: labels fireball -> f, enemy -> e	Can't find: func fireballTouchedEnemy(fireball: Fireball, enemy: Enemy)
 17-fireballs/solution	✅✅✅✅	-	complete	-	answer key	-
 17-fireballs/starter	❌❌❌❌	Pressing ▼ didn't throw anything.	none	nocomplete	the page as students get it (a hop into the tunnel roof can stomp a frog, so the checklist is the gate)	-
@@ -302,6 +303,6 @@
 04-coyote/wrong-speed-window	✅✅✅❌	Tapping ▲ again at the top of a jump made you jump again in mid-air	none	nocomplete	no framesInAir: justPressed jumps whenever speedY is between -6 and 0 (also near the top of a jump)	-
 10-bee/wrong-down-positive	❌❌	The bee only goes up. After the first 60 frames of its count it should fly down	none	nocomplete	the else flies "down at speed 2" with speedY = 2	-
 16-starpower/wrong-star-before-looks	✅✅✅❌	With star power you look just the same as without it.	none	nocomplete	the countdown above How you look, which sets player.emoji again, so the 🤩 never shows	-
-16-starpower/wrong-while-drain	❌❌✅❌	player.timer went from 300 to 0 in one frame: a while loop	none	nocomplete	while player.timer > 0 { ... } empties the star in one frame	-
+16-starpower/wrong-while-drain	❌✅✅❌	player.timer went from 300 to 0 in one frame: a while loop	none	nocomplete	while player.timer > 0 { ... } empties the star in one frame	-
 18-stopwatch/alt-count-in-updateplayer	✅✅	-	complete	-	game.timer counted in updatePlayer: also once a frame (the checks' settling frames never show in the numbers)	-
 22-level2/wrong-no-lock	✅✅❌	With coins left, your 🚩 still takes you on.	none	nocomplete	the flag goes to the next level with coins left: the lock from Locked Flag is gone	-

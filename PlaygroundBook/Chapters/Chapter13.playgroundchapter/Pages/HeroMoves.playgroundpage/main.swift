@@ -153,7 +153,7 @@ _startGamePage()
 //#-end-hidden-code
 /*:
  # 13. Hero Moves
- **You can skip this page:** nothing later needs it. `updatePlayer` runs every frame, so it can change `player.emoji` to match what you're doing, like a flip book.
+ `updatePlayer` runs every frame, so it can change `player.emoji` to match what you're doing, like a flip book.
 
  ## Your turn
  - At the 👉 "How you look" comment: in the air, look different (like 🤸).

@@ -28,7 +28,7 @@ and the engine's own names (`Functions`, `FunctionName`, `functionWarning`, ...)
 the next page always shows the answer, and every page carries all the code of the pages before it.
 Nothing is hidden: every behavior the game has (winning at the 🚩, an enemy hurting you, "Ouch!")
 comes from code on the page. Students work through the book at their own pace; there are no
-optional pages, but Hero Moves and Backgrounds say "You can skip this page" (nothing later needs them).
+optional pages.
 
 **The chain has one source:** `GameModules/Tools/chain.py`. It holds every page's banner, its stub
 (what the starter adds to the previous page's finished code) and its answer (what the page's finished
@@ -177,8 +177,9 @@ pieces of those lines that would give most of one away: an if's condition, the r
 (`game.timer / 60`), that the starter doesn't already show.
 - **Code pages:** the prose shows no line or piece of its own answer or of any later page's; it has
   a `## Your turn` with 1-3 bullets and one `**Your tools:**` line (not Design Your Own Game), no
-  `**Controls:**` line after page 1, at most 100 words (Walk 140, Design Your Own Game 300; words
-  have a letter or a digit), and ends with its Stuck line.
+  `**Controls:**` line after page 1, at most 100 words (Walk 140, Fireballs 125 for its
+  `justPressed` note, Design Your Own Game 300; words have a letter or a digit), and ends with its
+  Stuck line.
 - **Hints pages:** one per Part with code, listed last in its chapter's manifest; prose only
   (Manifest.plist and main.swift, no hidden code, Name "Hints: <Part>", HiddenByDefault, no
   poster); one "Finished this Part? Go to the next page: **<title>**." line that names the next

@@ -489,7 +489,6 @@ extension Checks {
     .P.*...ccc.....
     ###############
     """
-    static let starThenCrab: String = ".........\n.P*" + String(repeating: ".", count: 36) + "c.\n" + String(repeating: "#", count: 41)
     static let starOnly = """
     ..............
     .P.*..........
@@ -528,28 +527,15 @@ extension Checks {
             }
             return "With star power, an enemy you touch should disappear. In playerTouchedEnemy, ask about player.timer first, before the stomp rule."
         },
-        Check(title: "Star power runs out") { functions in
-            let t = TestDrive(starThenCrab, functions)
-            var drained = 0, before = 0
-            t.run(8, hold: [.right]) { w in
-                if before >= 60 && player.timer == 0 && w.hurts == 0 { drained = before }
-                before = player.timer
-            }
-            let afterStar = player.timer
-            t.run(720)
-            let afterWait = player.timer
-            var n = 0
-            while t.world.hurts == 0 && n < 300 && !t.crabs[0].removed { t.run(1, hold: [.right]); n += 1 }
-            if t.ranBuiltIn(.updatePlayer) { return missing(.updatePlayer) }
-            if afterStar <= 0 {
-                if t.ranBuiltIn(.playerTouchedStar) { return missing(.playerTouchedStar) }
-                if drained > 0 { return drainHint(drained) }
-                return noStar
-            }
-            if t.world.hurts > 0 && !t.crabs[0].removed { return nil }
-            if afterWait > afterStar { return "Your star power counts up, so it never runs out. Count player.timer down instead." }
-            if afterWait == afterStar { return "Star power never runs out, because player.timer never changes. In updatePlayer, after the looks part, take 1 away from player.timer on every frame that it's above 0." }
-            return "12 seconds after the ⭐, an enemy should hurt you again. Count player.timer down to 0, and remove enemies only when player.timer is above 0."
+        Check(title: "Star powerup disappears on pickup") { functions in
+            // Walk over the ⭐: once you've touched it, it's out of the game.
+            let t = TestDrive(starOnly, functions)
+            var started = false
+            t.run(30, hold: [.right]) { _ in if player.timer > 0 { started = true } }
+            if !t.world.stars.isEmpty && t.world.stars.allSatisfy({ $0.removed }) { return nil }
+            if t.ranBuiltIn(.playerTouchedStar) { return missing(.playerTouchedStar) }
+            if !started { return noStar }
+            return "The ⭐ is still there after you touched it, so it gives you star power again and again. In playerTouchedStar, take the star out of the game with its remove()."
         },
         Check(title: "Without a ⭐, enemies still hurt") { functions in
             let t = TestDrive(stompWalk, functions)
@@ -559,17 +545,26 @@ extension Checks {
             return "Without a ⭐, walking into an enemy should hurt: keep the walked-into-it part at the end."
         },
         Check(title: "You look like a star while it lasts") { functions in
-            // Walk over the ⭐ (or the same floor without one), then stand still: same look?
-            func look(_ map: String) -> (emoji: String, builtIn: Bool) {
+            // Walk over the ⭐ (or the same floor without one), then stand still: a different look?
+            // Then 12 more seconds, long after 5 seconds of star power (or a 10-second Try it):
+            // the same look again, so the countdown has to reach 0.
+            func look(_ map: String) -> (during: String, after: String, timerDuring: Int, timerAfter: Int, builtIn: Bool) {
                 let t = TestDrive(map, functions)
                 t.run(30, hold: [.right])
                 t.run(30)
-                return (player.emoji, t.ranBuiltIn(.updatePlayer))
+                let during = player.emoji, timerDuring = player.timer
+                t.run(720)
+                return (during, player.emoji, timerDuring, player.timer, t.ranBuiltIn(.updatePlayer))
             }
             let star = look(starOnly), plain = look(starOnlyNoStar)
-            if star.emoji != plain.emoji { return nil }
-            if star.builtIn { return missing(.updatePlayer) }
-            return "With star power you look just the same as without it. When player.timer is above 0, look like 🤩. The last line that sets player.emoji wins: go after \"How you look\"."
+            if star.during == plain.during {
+                if star.builtIn { return missing(.updatePlayer) }
+                return "With star power you look just the same as without it. When player.timer is above 0, look like 🤩. The last line that sets player.emoji wins: go after \"How you look\"."
+            }
+            if star.after == plain.after { return nil }
+            if star.timerAfter > star.timerDuring { return "Your star power counts up, so it never runs out. Count player.timer down instead." }
+            if star.timerAfter == star.timerDuring { return "Star power never runs out, because player.timer never changes. In updatePlayer, after the looks part, take 1 away from player.timer on every frame that it's above 0." }
+            return "12 seconds after the ⭐ you still look like a star. Count player.timer down to 0, and look like 🤩 only while it's above 0."
         },
     ]
 

@@ -250,7 +250,7 @@ func updatePlayer(player: Player) {
     } else {
         player.emoji = "🤸"
     }
-    // 👉 Star power: count player.timer down here.
+    // 👉 Star power: count player.timer down here, and change how you look while it lasts.
 
 }
 

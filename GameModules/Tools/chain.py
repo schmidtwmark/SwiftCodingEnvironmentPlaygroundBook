@@ -482,7 +482,7 @@ func playerTouchedSpring(spring: Spring) {
 func playerTouchedStar(star: Star) {
 
 }''', after_block="func playerTouchedSpring(spring: Spring) {")
-        c.func_end("func updatePlayer(player: Player) {", "    // 👉 Star power: count player.timer down here.\n")
+        c.func_end("func updatePlayer(player: Player) {", "    // 👉 Star power: count player.timer down here, and change how you look while it lasts.\n")
         c.replace('''func playerTouchedEnemy(enemy: Enemy) {
     if player.speedY < 0 {''', '''func playerTouchedEnemy(enemy: Enemy) {
     // 👉 Star power first: with a ⭐, plow right through.
@@ -495,7 +495,7 @@ func playerTouchedStar(star: Star) {
     star.remove()
     player.timer = 300
 }''')
-        c.replace("    // 👉 Star power: count player.timer down here.\n", '''    // Star power: count down, and look like a star.
+        c.replace("    // 👉 Star power: count player.timer down here, and change how you look while it lasts.\n", '''    // Star power: count down, and look like a star.
     if player.timer > 0 {
         player.timer -= 1
         player.emoji = "🤩"
@@ -519,10 +519,10 @@ func updateFireball(fireball: Fireball) {
 func fireballTouchedEnemy(fireball: Fireball, enemy: Enemy) {
 
 }''', after_block="func playerTouchedEnemy(enemy: Enemy) {")
-        c.func_end("func updatePlayer(player: Player) {", "    // 👉 ▼ throws a fireball the way you face.\n")
+        c.func_end("func updatePlayer(player: Player) {", "    // 👉 When ▼ is just pressed (justPressed), throw a fireball the way you face.\n")
 
     def solve17(c):
-        c.replace("    // 👉 ▼ throws a fireball the way you face.\n", '''    // ▼ throws a fireball the way you face:
+        c.replace("    // 👉 When ▼ is just pressed (justPressed), throw a fireball the way you face.\n", '''    // ▼ throws a fireball the way you face:
     if justPressed(.down) {
         if player.facingRight() {
             game.spawn(.fireball, x: player.x, y: player.y, speedX: 12, speedY: 0)

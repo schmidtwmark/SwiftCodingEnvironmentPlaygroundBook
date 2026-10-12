@@ -166,7 +166,7 @@ _startGamePage()
 //#-end-hidden-code
 /*:
  # 15. Boing!
- A 🍄 launches you: it sets your `speedY` once, and gravity does the rest, like a jump. A jump of 18 rises 171 points, and the wall is 256 points tall.
+ A 🍄 launches you: it sets your `speedY` once, and gravity does the rest, like a jump. Try different values of `speedY` until you make it over the wall!
 
  ## Your turn
  - In `playerTouchedSpring`, launch the player high enough to clear the wall.

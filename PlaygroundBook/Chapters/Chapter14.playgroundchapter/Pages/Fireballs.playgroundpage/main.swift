@@ -202,10 +202,12 @@ _startGamePage()
 //#-end-hidden-code
 /*:
  # 17. Fireballs
- `game.spawn` makes a brand-new thing while the game runs. A spawned 🔥 moves by its speeds like everything else, and its update function already removes it at a wall.
+ `game.spawn` makes a brand-new thing while the game runs. A spawned 🔥 moves by its speeds, and its update function already removes it at a wall.
+
+ **New: `justPressed`.** `isPressed(.down)` is true on every frame you hold ▼. `justPressed(.down)` is true only on the **first** frame of a press, so one press throws one 🔥, not 60 a second.
 
  ## Your turn
- - When ▼ is **first** pressed, spawn a `.fireball` at your `x` and `y`, flying at speed 12 the way you face.
+ - When ▼ is just pressed (`justPressed`), spawn a `.fireball` at your `x` and `y`, flying at speed 12 the way you face.
  - In `fireballTouchedEnemy`, remove the enemy and the 🔥.
  - Clear the frogs out of the tunnel and reach the 🚩.
 
@@ -277,7 +279,7 @@ func updatePlayer(player: Player) {
         player.timer -= 1
         player.emoji = "🤩"
     }
-    // 👉 ▼ throws a fireball the way you face.
+    // 👉 When ▼ is just pressed (justPressed), throw a fireball the way you face.
 
 }
 

@@ -36,7 +36,8 @@ chain = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(chain)
 
 CHAPTERS = sys.argv[1] if len(sys.argv) > 1 else os.path.join(REPO, "PlaygroundBook", "Chapters")
-WORD_LIMIT = {"01-walk": 140, "23-design": 300}   # every other code page: DEFAULT_WORD_LIMIT
+# Fireballs is the first page with justPressed, and its card explains it next to isPressed.
+WORD_LIMIT = {"01-walk": 140, "17-fireballs": 125, "23-design": 300}   # every other code page: DEFAULT_WORD_LIMIT
 DEFAULT_WORD_LIMIT = 100
 
 
